@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import SignInForm from "./SignInForm";
+import SignInForm from "../sign-in/SignInForm";
 
-export default function SignInPage() {
+export default function RecoverPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#0a0c0a" }}>
       <div className="w-full max-w-sm space-y-6">
@@ -13,20 +13,25 @@ export default function SignInPage() {
             HD2 Council
           </h1>
           <p className="text-sm mt-2 tracking-wide" style={{ color: "#4a6b4a" }}>
-            Sign in to vote and participate
+            Recover account access
           </p>
         </div>
+
+        <p className="text-xs text-center tracking-wide" style={{ color: "#4a6b4a" }}>
+          Lost access to your account? Enter your email and we&apos;ll send you a recovery link.
+        </p>
+
         <Suspense>
           <SignInForm />
         </Suspense>
 
         <div className="text-center">
           <a
-            href="/auth/recover"
+            href="/auth/sign-in"
             className="text-xs tracking-widest uppercase transition-colors"
             style={{ color: "#4a6b4a" }}
           >
-            Forgot access? →
+            ← Back to sign in
           </a>
         </div>
       </div>
