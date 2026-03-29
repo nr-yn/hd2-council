@@ -1,0 +1,66 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build:
+      context: ../..
+      dockerfile: apps/hd2-council/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "file:/data/dev.db"
+      NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
+      RESEND_API_KEY: "${RESEND_API_KEY}"
+      EMAIL_FROM: "${EMAIL_FROM:-HD2 Council <noreply@hd2council.app>}"
+      REDIS_URL: "redis://redis:6379"
+      LM_STUDIO_URL: "${LM_STUDIO_URL:-http://192.168.1.107:1234}"
+    volumes:
+      - db_data:/data
+    expose:
+      - "3004"
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/governance-brain/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["node_modules/.bin/tsx", "apps/governance-brain/workers/moderation-worker.ts"]
+    environment:
+      DATABASE_URL: "file:/data/dev.db"
+      REDIS_URL: "redis://redis:6379"
+      LM_STUDIO_URL: "${LM_STUDIO_URL:-http://192.168.1.107:1234}"
+    volumes:
+      - db_data:/data   # same DB as the app
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  db_data:
+  redis_data:
+  caddy_data:
+  caddy_config:

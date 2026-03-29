@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+:root {
+  --se-black:    #060604;
+  --se-dark:     #0e0d08;
+  --se-panel:    #111008;
+  --se-gold:     #c9a227;
+  --se-gold-dim: #6a5410;
+  --se-green:    #4ade80;
+  --se-red:      #dc2626;
+  --se-blue:     #60a5fa;
+  --se-amber:    #f59e0b;
+  --se-text:     #d4c47a;
+  --se-text-dim: #7a6a30;
+  --se-text-faint: #3a3018;
+}
+
+/* ── Base ───────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--se-black);
+  color: var(--se-text);
+  font-family: 'Share Tech Mono', monospace;
+  background-image:
+    radial-gradient(ellipse 60% 30% at 15% 0%,  rgba(201,162,39,.05) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 20% at 85% 100%, rgba(74,222,128,.03) 0%, transparent 70%);
+  min-height: 100vh;
+}
+
+/* scanlines overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent          0px,
+    transparent          3px,
+    rgba(0,0,0,.12)      3px,
+    rgba(0,0,0,.12)      4px
+  );
+}
+
+/* ── Typography ─────────────────────────────────────── */
+.display { font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+/* ── Corner-bracket boxes ───────────────────────────── */
+.cb-gold {
+  position: relative;
+  background-color: rgba(201,162,39,.04);
+  background-image:
+    linear-gradient(var(--se-gold),var(--se-gold)) top    left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) top    left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) top    right / 18px 1px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) top    right / 1px 18px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) bottom left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) bottom left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) bottom right / 18px 1px no-repeat,
+    linear-gradient(var(--se-gold),var(--se-gold)) bottom right / 1px 18px no-repeat;
+}
+
+.cb-green {
+  position: relative;
+  background-color: rgba(74,222,128,.03);
+  background-image:
+    linear-gradient(var(--se-green),var(--se-green)) top    left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) top    left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) top    right / 18px 1px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) top    right / 1px 18px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) bottom left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) bottom left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) bottom right / 18px 1px no-repeat,
+    linear-gradient(var(--se-green),var(--se-green)) bottom right / 1px 18px no-repeat;
+}
+
+.cb-red {
+  position: relative;
+  background-color: rgba(220,38,38,.04);
+  background-image:
+    linear-gradient(var(--se-red),var(--se-red)) top    left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) top    left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) top    right / 18px 1px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) top    right / 1px 18px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) bottom left  / 18px 1px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) bottom left  / 1px 18px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) bottom right / 18px 1px no-repeat,
+    linear-gradient(var(--se-red),var(--se-red)) bottom right / 1px 18px no-repeat;
+}
+
+/* ── Glow utilities ─────────────────────────────────── */
+.glow-gold  { text-shadow: 0 0 8px rgba(201,162,39,.9), 0 0 20px rgba(201,162,39,.4); }
+.glow-green { text-shadow: 0 0 8px rgba(74,222,128,.8), 0 0 18px rgba(74,222,128,.3); }
+.glow-red   { text-shadow: 0 0 8px rgba(220,38,38,.9),  0 0 18px rgba(220,38,38,.4); }
+
+/* ── Hazard stripes ─────────────────────────────────── */
+.hazard-red {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0px, transparent 8px,
+    rgba(220,38,38,.12) 8px, rgba(220,38,38,.12) 16px
+  );
+}
+.hazard-gold {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0px, transparent 8px,
+    rgba(201,162,39,.10) 8px, rgba(201,162,39,.10) 16px
+  );
+}
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes flicker {
+  0%,89%,91%,100% { opacity: 1; }
+  90%             { opacity: .85; }
+}
+@keyframes pulse-live {
+  0%,100% { opacity: 1;   box-shadow: 0 0 0 0   rgba(74,222,128,.6); }
+  50%     { opacity: .6;  box-shadow: 0 0 0 4px rgba(74,222,128,0);  }
+}
+@keyframes march {
+  to { background-position: 40px 0; }
+}
+
+.flicker { animation: flicker 10s infinite; }
+.pulse-live {
+  animation: pulse-live 1.6s ease-in-out infinite;
+  border-radius: 50%;
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--se-green);
+}
+
+/* animated hazard stripe on hover */
+.hazard-march {
+  background-size: 40px 40px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0, transparent 10px,
+    rgba(220,38,38,.15) 10px, rgba(220,38,38,.15) 20px
+  );
+  transition: opacity .2s;
+}
+.hazard-march:hover { animation: march 1s linear infinite; }

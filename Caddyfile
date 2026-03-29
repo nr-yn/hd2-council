@@ -1,0 +1,9 @@
+# Replace hd2council.app with your actual domain
+hd2council.app {
+    reverse_proxy app:3004
+}
+
+# Optional: redirect www → apex
+www.hd2council.app {
+    redir https://hd2council.app{uri} permanent
+}

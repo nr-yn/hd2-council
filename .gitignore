@@ -1,0 +1,9 @@
+# Playwright auth state (runtime, never commit)
+.admin-state.json
+.citizen-state.json
+e2e/.admin-state.json
+e2e/.citizen-state.json
+
+# Generated test artefacts
+e2e/report/
+test-results/

@@ -1,0 +1,37 @@
+{
+  "name": "hd2-council",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3004",
+    "build": "next build",
+    "start": "next start --port 3004",
+    "lint": "eslint",
+    "test": "vitest run",
+    "db:seed": "tsx --env-file=.env prisma/seed.ts",
+    "e2e": "playwright test --config e2e/playwright.config.ts",
+    "e2e:ui": "playwright test --config e2e/playwright.config.ts --ui",
+    "db:migrate:test": "cross-env DATABASE_URL=\"file:./e2e/test.db\" prisma migrate deploy --schema ../../packages/db/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@platform/db": "workspace:*",
+    "@platform/rbac": "workspace:*",
+    "next": "16.2.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^4.1.0"
+  }
+}
