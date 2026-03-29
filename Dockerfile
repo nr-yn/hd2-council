@@ -1,67 +1,56 @@
 # syntax=docker/dockerfile:1
-# Build context must be the repo root: docker build -f apps/hd2-council/Dockerfile .
+# Multi-stage build for HD2 Council — pnpm monorepo, Next.js standalone output.
+# Build context must be the monorepo root:
+#   docker build -f apps/hd2-council/Dockerfile -t hd2-council .
 
-# ── Stage 1: deps ────────────────────────────────────────────────────────────
-FROM node:24-slim AS deps
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+FROM node:22-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-RUN npm install -g pnpm@10
-
-WORKDIR /app
+# ── deps stage ───────────────────────────────────────────────────────────────
+FROM base AS deps
+WORKDIR /repo
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY packages/ packages/
-COPY apps/hd2-council/package.json apps/hd2-council/
-# Stub other apps so pnpm doesn't try to install them
-COPY apps/governance-brain/package.json apps/governance-brain/ 2>/dev/null || true
-COPY apps/campaign-council/package.json apps/campaign-council/ 2>/dev/null || true
-COPY apps/fantasy-council/package.json apps/fantasy-council/ 2>/dev/null || true
+COPY packages/db/package.json ./packages/db/
+COPY packages/voting/package.json ./packages/voting/
+COPY packages/rbac/package.json ./packages/rbac/
+COPY packages/comms/package.json ./packages/comms/
+COPY packages/templates/package.json ./packages/templates/
+COPY governance-loop/package.json ./governance-loop/
+COPY apps/hd2-council/package.json ./apps/hd2-council/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm install --frozen-lockfile
-
-# ── Stage 2: build ───────────────────────────────────────────────────────────
-FROM deps AS builder
-WORKDIR /app
-
-COPY packages/ packages/
-COPY apps/hd2-council/ apps/hd2-council/
+# ── builder stage ─────────────────────────────────────────────────────────────
+FROM base AS builder
+WORKDIR /repo
+COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=deps /repo/packages/db/node_modules ./packages/db/node_modules
+COPY --from=deps /repo/apps/hd2-council/node_modules ./apps/hd2-council/node_modules
+COPY . .
 
 # Generate Prisma client
-RUN pnpm --filter @platform/db generate
+RUN pnpm --filter @platform/db run generate
 
-# Build the Next.js standalone app
-RUN pnpm --filter hd2-council build
+# Build Next.js app with standalone output
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm --filter hd2-council run build
 
-# ── Stage 3: runner ──────────────────────────────────────────────────────────
-FROM node:24-slim AS runner
-RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
-
-ENV NODE_ENV=production
-ENV PORT=3004
+# ── runner stage ──────────────────────────────────────────────────────────────
+FROM node:22-alpine AS runner
 WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3004
 
-# Copy standalone Next.js output
-COPY --from=builder /app/apps/hd2-council/.next/standalone ./
-COPY --from=builder /app/apps/hd2-council/.next/static ./apps/hd2-council/.next/static
-COPY --from=builder /app/apps/hd2-council/public ./apps/hd2-council/public
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-# Copy the generated Prisma client (needed at runtime)
-COPY --from=builder /app/packages/db/generated ./packages/db/generated
-# Copy better-sqlite3 native binary
-COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
-# Copy @prisma/adapter-better-sqlite3
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /repo/apps/hd2-council/.next/standalone ./
+COPY --from=builder /repo/apps/hd2-council/.next/static ./apps/hd2-council/.next/static
+COPY --from=builder /repo/apps/hd2-council/public ./apps/hd2-council/public
 
-# Prisma CLI (needed by instrumentation.ts to run migrate deploy at startup)
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-
-# Migrations + schema (needed at startup by prisma migrate deploy)
-COPY --from=builder /app/packages/db/prisma ./packages/db/prisma
-
-# Startup script — runs migrations then starts Next.js
-COPY apps/hd2-council/docker-start.sh ./docker-start.sh
-RUN chmod +x docker-start.sh
-
+USER nextjs
 EXPOSE 3004
 
-CMD ["sh", "docker-start.sh"]
+CMD ["node", "apps/hd2-council/server.js"]
