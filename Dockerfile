@@ -11,7 +11,7 @@ RUN corepack enable
 # ── deps stage ───────────────────────────────────────────────────────────────
 FROM base AS deps
 WORKDIR /repo
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .pnpmfile.cjs ./
 COPY packages/db/package.json ./packages/db/
 COPY packages/voting/package.json ./packages/voting/
 COPY packages/rbac/package.json ./packages/rbac/
@@ -26,6 +26,10 @@ FROM base AS builder
 WORKDIR /repo
 COPY --from=deps /repo/node_modules ./node_modules
 COPY --from=deps /repo/packages/db/node_modules ./packages/db/node_modules
+COPY --from=deps /repo/packages/voting/node_modules ./packages/voting/node_modules
+COPY --from=deps /repo/packages/comms/node_modules ./packages/comms/node_modules
+COPY --from=deps /repo/packages/rbac/node_modules ./packages/rbac/node_modules
+COPY --from=deps /repo/packages/templates/node_modules ./packages/templates/node_modules
 COPY --from=deps /repo/apps/hd2-council/node_modules ./apps/hd2-council/node_modules
 COPY . .
 
