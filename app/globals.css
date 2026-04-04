@@ -21,7 +21,7 @@ html { scroll-behavior: smooth; }
 body {
   background-color: var(--se-black);
   color: var(--se-text);
-  font-family: 'Share Tech Mono', monospace;
+  font-family: var(--font-share-tech-mono), monospace;
   background-image:
     radial-gradient(ellipse 60% 30% at 15% 0%,  rgba(201,162,39,.05) 0%, transparent 70%),
     radial-gradient(ellipse 40% 20% at 85% 100%, rgba(74,222,128,.03) 0%, transparent 70%);
@@ -45,7 +45,7 @@ body::after {
 }
 
 /* ── Typography ─────────────────────────────────────── */
-.display { font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.display { font-family: var(--font-rajdhani), sans-serif; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 
 /* ── Corner-bracket boxes ───────────────────────────── */
 .cb-gold {
@@ -144,3 +144,24 @@ body::after {
   transition: opacity .2s;
 }
 .hazard-march:hover { animation: march 1s linear infinite; }
+
+/* ── shadcn CSS variable bridge ── */
+@theme inline {
+  --color-background:           var(--se-black);
+  --color-foreground:           var(--se-text);
+  --color-card:                 var(--se-panel);
+  --color-card-foreground:      var(--se-text);
+  --color-primary:              var(--se-gold);
+  --color-primary-foreground:   var(--se-black);
+  --color-secondary:            var(--se-panel);
+  --color-secondary-foreground: var(--se-text);
+  --color-muted:                var(--se-panel);
+  --color-muted-foreground:     oklch(0.55 0.05 80);
+  --color-accent:               var(--se-amber);
+  --color-accent-foreground:    var(--se-black);
+  --color-destructive:          var(--se-red);
+  --color-border:               var(--se-gold-dim);
+  --color-input:                var(--se-panel);
+  --color-ring:                 var(--se-gold);
+  --radius:                     0.125rem;
+}

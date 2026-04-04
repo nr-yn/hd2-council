@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Rajdhani, Share_Tech_Mono } from "next/font/google";
 import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL } from "@/lib/config";
+
+const rajdhani = Rajdhani({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-rajdhani",
+});
+
+const shareTechMono = Share_Tech_Mono({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-share-tech-mono",
+});
 
 export const metadata: Metadata = {
   title: "HD2 Community Council — Managed Democracy",
@@ -18,16 +31,7 @@ export default async function RootLayout({
   const isAdmin = session?.person.email === ADMIN_EMAIL;
 
   return (
-    <html lang="en">
-      {/* eslint-disable-next-line @next/next/no-head-element */}
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
       <body className="min-h-screen antialiased">
         {/* ── Header ──────────────────────────────────────── */}
         <header
