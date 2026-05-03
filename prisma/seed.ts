@@ -13,36 +13,6 @@ const ISSUES: {
 }[] = [
   // ── BALANCE — Controversial nerfs ─────────────────────────────────────────
   {
-    id: "issue-breaker-incendiary-nerf",
-    title: "Breaker Incendiary over-nerfed in Escalation of Freedom — still not recovered",
-    description:
-      "The SG-225IE Breaker Incendiary had its magazines cut from 6 to 4 and recoil increased from 28 to 41 in the August 2024 Escalation of Freedom update. Over a year later it still runs dry before the reload window on Difficulty 7+. The nerf was justified by a 30% Terminid session usage rate — but in a co-op PvE game, high usage means a weapon is fun and effective, not that it is broken.",
-    proposedChange:
-      "Restore magazine count to 6 and reduce recoil to 32 (a modest increase from pre-nerf). If usage-based balancing is the framework, buff the other primary shotguns to be competitive alternatives rather than nerfing the one weapon players enjoy.",
-    category: "balance",
-    submitterEmail: "democracy.enjoyer@super-earth.gov",
-  },
-  {
-    id: "issue-flamethrower-warbond-nerf",
-    title: "Flamethrower armour penetration removed the same week as the fire-themed Warbond launched",
-    description:
-      "The FLAM-40 Flamethrower lost the ability to penetrate Charger leg armour in the same patch that released the Freedom's Flame Warbond — a premium content drop selling additional flamethrowers. The timing was interpreted by the community as deliberately degrading existing tools to push new paid purchases. 'Not one single person is happy about this change' became the most-upvoted Steam thread of the month.",
-    proposedChange:
-      "Restore flamethrower leg-armour penetration on Chargers, or define a consistent anti-armour niche for all fire-class weapons and publish it. If fire cannot be a heavy-armour counter, the Warbond marketing copy must be updated accordingly.",
-    category: "balance",
-    submitterEmail: "pyro.rights@helldivers.net",
-  },
-  {
-    id: "issue-eruptor-double-nerf",
-    title: "E-36 Eruptor double-nerfed — shrapnel removed with no meaningful compensation",
-    description:
-      "The E-36 Eruptor received two successive nerfs: magazine count halved, then all shrapnel removed from its explosion (replaced with +40 flat damage that independent testing showed was a net downgrade). The weapon went from reliably one-shotting Devastators and Bile Spewers — its core identity — to requiring multiple shots with reduced ammo. A community manager called the shrapnel change 'not working as intended' while a game designer said the weapon was 'still absolutely viable' in the same week, creating contradictory public messaging.",
-    proposedChange:
-      "Restore shrapnel, or increase direct-hit damage by at least 80 (not 40) to genuinely compensate for the crowd-control loss. Restore the magazine count from the first nerf. Commit to one public position on the weapon's intended role.",
-    category: "balance",
-    submitterEmail: "eruptor.main@gmail.com",
-  },
-  {
     id: "issue-coyote-stealth-nerf",
     title: "AR-2 Coyote stealth-nerfed via enemy resistance changes not listed in patch notes",
     description:
@@ -360,7 +330,7 @@ async function main() {
     console.log(`  [${i + 1}/${ISSUES.length}] ${issue.title.slice(0, 70)}…`);
   }
 
-  console.log("\nSeed complete. 23 HD2 community issues loaded — votes reset to zero.");
+  console.log("\nSeed complete. 20 HD2 community issues loaded — votes reset to zero.");
 }
 
 main()
