@@ -281,40 +281,6 @@ export default async function IssuePage({
         </section>
       )}
 
-      {/* ── Change.org Petition Link ─────────────────── */}
-      {notes.changeOrgUrl && (
-        <section className="p-5" style={{ backgroundColor: "var(--se-panel)" }}>
-          <div
-            className="flex items-center gap-3 mb-3 pb-2"
-            style={{ borderBottom: "1px solid var(--se-gold-dim)" }}
-          >
-            <span
-              className="display text-xs tracking-widest"
-              style={{ color: "var(--se-gold)", letterSpacing: ".3em", fontSize: "11px" }}
-            >
-              ▸ EXTERNAL PETITION
-            </span>
-          </div>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <p className="text-sm" style={{ color: "var(--se-text-dim)" }}>
-              This issue has an active petition on Change.org. Add your name.
-            </p>
-            <a
-              href={notes.changeOrgUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="display shrink-0 px-5 py-2 text-xs tracking-widest transition-opacity hover:opacity-80"
-              style={{
-                color: "var(--se-black)",
-                backgroundColor: "var(--se-gold)",
-                letterSpacing: ".2em",
-              }}
-            >
-              SIGN ON CHANGE.ORG →
-            </a>
-          </div>
-        </section>
-      )}
 
       {/* ── Amendment Section (voting phase only) ───────── */}
       {session && votingOpen && (
