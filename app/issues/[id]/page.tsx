@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@platform/db";
@@ -5,6 +6,48 @@ import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import UpvoteButton from "./UpvoteButton";
 import { AmendmentForm } from "./AmendmentForm";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  const item = await prisma.agendaItem.findUnique({
+    where: { id },
+    select: { title: true, description: true },
+  });
+
+  if (!item) return { title: "Issue Not Found" };
+
+  const snippet = item.description
+    ? item.description.slice(0, 155).trimEnd() + (item.description.length > 155 ? "…" : "")
+    : "Helldivers 2 community issue — vote to send it to Arrowhead Game Studios.";
+
+  const url = `https://democracy.quorate.cc/issues/${id}`;
+
+  return {
+    title: item.title,
+    description: snippet,
+    openGraph: {
+      title: `${item.title} | HD2 Community Council`,
+      description: snippet,
+      url,
+      type: "article",
+      images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "HD2 Community Council" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${item.title} | HD2 Community Council`,
+      description: snippet,
+      images: ["/og-image.jpg"],
+    },
+    alternates: {
+      canonical: url,
+    },
+  };
+}
 
 const CATEGORY_STYLE: Record<string, { color: string; label: string; clearance: string }> = {
   balance: { color: "#4ade80", label: "BALANCE REPORT",  clearance: "PRIORITY-1" },
@@ -56,6 +99,7 @@ export default async function IssuePage({
       return JSON.parse(motion.specialNotes ?? "{}") as {
         submitterEmail?: string;
         proposedChange?: string;
+        changeOrgUrl?: string;
       };
     } catch {
       return {};
@@ -75,7 +119,7 @@ export default async function IssuePage({
       <Link
         href="/issues"
         className="display text-xs tracking-widest transition-opacity hover:opacity-60"
-        style={{ color: "var(--se-text-dim)", letterSpacing: ".25em", fontSize: "10px" }}
+        style={{ color: "var(--se-text-dim)", letterSpacing: ".25em", fontSize: "11px" }}
       >
         ← BACK TO DOSSIER
       </Link>
@@ -127,7 +171,7 @@ export default async function IssuePage({
               {agendaItem.title}
             </h1>
             <div className="flex items-center gap-4 flex-wrap">
-              <p className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+              <p className="text-xs" style={{ color: "var(--se-hint)" }}>
                 FILED:{" "}
                 {motion.createdAt.toLocaleDateString("en-US", {
                   year: "numeric",
@@ -136,7 +180,7 @@ export default async function IssuePage({
                 })}
               </p>
               {isAdmin && notes.submitterEmail && (
-                <p className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+                <p className="text-xs" style={{ color: "var(--se-hint)" }}>
                   BY: {notes.submitterEmail}
                 </p>
               )}
@@ -156,7 +200,7 @@ export default async function IssuePage({
             >
               {(motion.votesFor ?? 0).toLocaleString()}
             </p>
-            <p className="display" style={{ color: "var(--se-text-faint)", fontSize: "9px", letterSpacing: ".3em" }}>
+            <p className="display" style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".3em" }}>
               VOICES CAST
             </p>
           </div>
@@ -172,14 +216,12 @@ export default async function IssuePage({
           >
             <span
               className="display text-xs tracking-widest"
-              style={{ color: "var(--se-amber)", letterSpacing: ".3em", fontSize: "10px" }}
+              style={{ color: "var(--se-amber)", letterSpacing: ".3em", fontSize: "11px" }}
             >
               ▸ PROBLEM STATEMENT
             </span>
           </div>
-          <p className="text-sm leading-relaxed" style={{ color: "var(--se-text-dim)", lineHeight: "1.75" }}>
-            {agendaItem.description}
-          </p>
+          <ProposedChange text={agendaItem.description} accent="var(--se-amber)" textColor="var(--se-text-dim)" />
         </section>
       )}
 
@@ -192,14 +234,12 @@ export default async function IssuePage({
           >
             <span
               className="display text-xs tracking-widest"
-              style={{ color: cat.color, letterSpacing: ".3em", fontSize: "10px" }}
+              style={{ color: cat.color, letterSpacing: ".3em", fontSize: "11px" }}
             >
               ▸ PROPOSED CHANGE
             </span>
           </div>
-          <p className="text-sm leading-relaxed" style={{ color: "var(--se-text)", lineHeight: "1.75" }}>
-            {notes.proposedChange}
-          </p>
+          <ProposedChange text={notes.proposedChange} accent={cat.color} />
         </section>
       ) : (
         <section
@@ -210,9 +250,44 @@ export default async function IssuePage({
             opacity: 0.5,
           }}
         >
-          <p className="display text-xs" style={{ color: "var(--se-text-faint)", letterSpacing: ".25em", fontSize: "9px" }}>
+          <p className="display text-xs" style={{ color: "var(--se-hint)", letterSpacing: ".25em", fontSize: "11px" }}>
             NO PROPOSED CHANGE FILED — COMMUNITY MAY SUBMIT AMENDMENT
           </p>
+        </section>
+      )}
+
+      {/* ── Change.org Petition Link ─────────────────── */}
+      {notes.changeOrgUrl && (
+        <section className="p-5" style={{ backgroundColor: "var(--se-panel)" }}>
+          <div
+            className="flex items-center gap-3 mb-3 pb-2"
+            style={{ borderBottom: "1px solid var(--se-gold-dim)" }}
+          >
+            <span
+              className="display text-xs tracking-widest"
+              style={{ color: "var(--se-gold)", letterSpacing: ".3em", fontSize: "11px" }}
+            >
+              ▸ EXTERNAL PETITION
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <p className="text-sm" style={{ color: "var(--se-text-dim)" }}>
+              This issue has an active petition on Change.org. Add your name.
+            </p>
+            <a
+              href={notes.changeOrgUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="display shrink-0 px-5 py-2 text-xs tracking-widest transition-opacity hover:opacity-80"
+              style={{
+                color: "var(--se-black)",
+                backgroundColor: "var(--se-gold)",
+                letterSpacing: ".2em",
+              }}
+            >
+              SIGN ON CHANGE.ORG →
+            </a>
+          </div>
         </section>
       )}
 
@@ -221,7 +296,7 @@ export default async function IssuePage({
         <section className="p-5 space-y-3" style={{ backgroundColor: "var(--se-panel)" }}>
           <p
             className="display text-xs"
-            style={{ color: "var(--se-text-faint)", letterSpacing: ".25em", fontSize: "9px" }}
+            style={{ color: "var(--se-hint)", letterSpacing: ".25em", fontSize: "11px" }}
           >
             ▸ COMMUNITY AMENDMENT
           </p>
@@ -236,14 +311,14 @@ export default async function IssuePage({
       >
         {!votingOpen ? (
           <div className="text-center">
-            <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em" }}>
+            <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
               {cycleStatus === "pending" ? "STAND BY — VOTING PHASE NOT YET OPEN"
                 : "VOTING HAS CLOSED — PETITION BEING COMPILED"}
             </p>
           </div>
         ) : !session ? (
           <div className="text-center space-y-3">
-            <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em" }}>
+            <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
               CITIZEN IDENTIFICATION REQUIRED TO VOTE
             </p>
             <Link
@@ -269,7 +344,7 @@ export default async function IssuePage({
           </div>
         ) : (
           <div className="space-y-2">
-            <p className="display text-xs text-center mb-3" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em", fontSize: "10px" }}>
+            <p className="display text-xs text-center mb-3" style={{ color: "var(--se-hint)", letterSpacing: ".3em", fontSize: "11px" }}>
               CAST YOUR VOTE — YOUR DEMOCRACY DEMANDS IT
             </p>
             <UpvoteButton
@@ -283,3 +358,28 @@ export default async function IssuePage({
     </div>
   );
 }
+
+function ProposedChange({ text, accent, textColor = "var(--se-text)" }: { text: string; accent: string; textColor?: string }) {
+  // Split on numbered list items (1. 2. 3. …) — render each as a distinct block
+  const numbered = text.split(/(?=\n?\d+\.\s)/).map(s => s.trim()).filter(Boolean);
+  const hasNumbered = numbered.length > 1 || /^\d+\.\s/.test(text.trim());
+
+  if (!hasNumbered) {
+    const paragraphs = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+    if (paragraphs.length <= 1) {
+      return (
+        <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: textColor, lineHeight: "1.75" }}>
+          {text}
+        </p>
+      );
+    }
+    return (
+      <div className="space-y-3">
+        {paragraphs.map((para, i) => (
+          <p key={i} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: textColor, lineHeight: "1.75" }}>
+            {para}
+          </p>
+        ))}
+      </div>
+    );
+  }

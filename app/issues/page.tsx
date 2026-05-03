@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getOpenCycle } from "@/lib/cycle";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL } from "@/lib/config";
 import { prisma } from "@platform/db";
+
+export const metadata: Metadata = {
+  title: "Field Reports — Helldivers 2 Balance & Bug Issues",
+  description:
+    "Browse community-submitted Helldivers 2 balance issues, undocumented nerfs, bugs, and quality-of-life problems. Vote for the ones that matter most.",
+  openGraph: {
+    title: "Field Reports — Helldivers 2 Balance & Bug Issues",
+    description:
+      "Browse and vote on Helldivers 2 balance issues, undocumented nerfs, bugs, and quality-of-life problems submitted by the community.",
+    url: "https://democracy.quorate.cc/issues",
+  },
+  alternates: {
+    canonical: "https://democracy.quorate.cc/issues",
+  },
+};
 
 const CATEGORY_STYLE: Record<string, { color: string; label: string }> = {
   balance: { color: "#4ade80", label: "BALANCE" },
@@ -18,7 +34,7 @@ export default async function IssuesPage() {
   if (!cycle) {
     return (
       <div className="text-center py-20 space-y-4">
-        <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em" }}>
+        <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
           ── NO ACTIVE VOTING CYCLE ──
         </p>
         <p className="text-xs" style={{ color: "var(--se-text-dim)" }}>
@@ -79,7 +95,7 @@ export default async function IssuesPage() {
       {/* ── Dossier Header ─────────────────────────────── */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="display text-xs tracking-widest mb-1" style={{ color: "var(--se-text-faint)", letterSpacing: ".35em", fontSize: "10px" }}>
+          <p className="display text-xs tracking-widest mb-1" style={{ color: "var(--se-hint)", letterSpacing: ".35em", fontSize: "11px" }}>
             TACTICAL PRIORITY DOSSIER
           </p>
           <h1 className="display glow-gold" style={{ color: "var(--se-gold)", fontSize: "1.8rem", letterSpacing: ".06em" }}>
@@ -107,12 +123,12 @@ export default async function IssuesPage() {
           <span
             className="display px-4 py-2 text-xs tracking-widest"
             style={{
-              color: "var(--se-text-faint)",
-              border: "1px solid var(--se-text-faint)",
+              color: "var(--se-hint)",
+              border: "1px solid var(--se-hint)",
               letterSpacing: ".2em",
-              fontSize: "10px",
+              fontSize: "11px",
               whiteSpace: "nowrap",
-              opacity: 0.4,
+              opacity: 0.6,
             }}
           >
             {cycle.status === "voting" ? "VOTING PHASE" : "DRAFTING PHASE"}
@@ -125,7 +141,7 @@ export default async function IssuesPage() {
         {Object.entries(CATEGORY_STYLE).map(([key, { color, label }]) => (
           <span key={key} className="flex items-center gap-1.5">
             <span className="inline-block w-2 h-2" style={{ backgroundColor: color }} />
-            <span className="display" style={{ color: "var(--se-text-faint)", fontSize: "9px", letterSpacing: ".2em" }}>
+            <span className="display" style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".2em" }}>
               {label}
             </span>
           </span>
@@ -135,10 +151,10 @@ export default async function IssuesPage() {
       {/* ── List ───────────────────────────────────────── */}
       {approvedItems.length === 0 ? (
         <div className="cb-gold p-10 text-center hazard-gold">
-          <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em" }}>
+          <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
             NO APPROVED REPORTS IN THIS CYCLE
           </p>
-          <p className="text-xs mt-2" style={{ color: "var(--se-text-faint)" }}>
+          <p className="text-xs mt-2" style={{ color: "var(--se-text-dim)" }}>
             Be the first to file a field report, citizen.
           </p>
         </div>
@@ -169,7 +185,7 @@ export default async function IssuesPage() {
                   <span
                     className="display shrink-0 tabular-nums"
                     style={{
-                      color: index < 3 ? cat.color : "var(--se-text-faint)",
+                      color: index < 3 ? cat.color : "var(--se-hint)",
                       fontSize: "1.6rem",
                       lineHeight: 1,
                       textShadow: index < 3 ? `0 0 8px ${cat.color}66` : "none",
@@ -184,12 +200,12 @@ export default async function IssuesPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span
                         className="display"
-                        style={{ color: cat.color, fontSize: "9px", letterSpacing: ".3em" }}
+                        style={{ color: cat.color, fontSize: "11px", letterSpacing: ".3em" }}
                       >
                         {cat.label}
                       </span>
                       {isAdmin && item.submitterEmail && (
-                        <span className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+                        <span className="text-xs" style={{ color: "var(--se-hint)" }}>
                           · {item.submitterEmail}
                         </span>
                       )}
@@ -242,7 +258,7 @@ export default async function IssuesPage() {
                     >
                       {item.votes.toLocaleString()}
                     </p>
-                    <p className="display" style={{ color: "var(--se-text-faint)", fontSize: "8px", letterSpacing: ".25em" }}>
+                    <p className="display" style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".25em" }}>
                       VOICES
                     </p>
                   </div>
@@ -255,3 +271,4 @@ export default async function IssuesPage() {
     </div>
   );
 }
+                                             

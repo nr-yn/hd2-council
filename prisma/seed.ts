@@ -218,6 +218,29 @@ const ISSUES: {
     category: "content",
     submitterEmail: "free.player@super-earth.gov",
   },
+
+  // ── 2026 COMMUNITY OUTCRY — New issues seeded April 2026 ─────────────────
+
+  {
+    id: "issue-super-credits-grind-23-warbonds",
+    title: "Super Credits grind unscalable at 23+ Warbonds — F2P players permanently priced out",
+    description:
+      "Helldivers 2 launched with 1 Premium Warbond. As of April 2026 there are 23, with more announced. Each costs 1,000 Super Credits. Independent testing shows F2P farming yields between 20 and 46 hours of play per Warbond depending on skill and RNG. The cumulative backlog for a new player who wants all content is now mathematically insurmountable without real-money spending — roughly $170 at list price. Arrowhead closed the 'force-quit seed exploit' in a March 2026 patch, making the grind more punitive. The March 2026 review-bombing campaign — which pushed Steam from 'Very Positive' to 'Mixed' — cited Super Credit scarcity as its primary grievance. Community proposals for Major Order Super Credit rewards have received no official response.",
+    proposedChange:
+      "Introduce a tiered credit earning system: award 25–50 Super Credits per Major Order completion (replacing zero), cap Warbond prices for releases older than 12 months at 600 SC, and add a 'Veteran's Cache' every 50 Helldivers Level milestones granting 100 SC. No single change needs to break the premium model — the cumulative backlog is the problem. Alternatively publish a binding promise on Warbond retirement or discounting with an explicit timeline.",
+    category: "content",
+    submitterEmail: "f2p.veteran@super-earth.gov",
+  },
+  {
+    id: "issue-oshaune-d10-difficulty-spike",
+    title: "Oshaune D10 is a statistical outlier in mission difficulty — never balanced after Illuminate return",
+    description:
+      "The planet Oshaune hosts the only tri-faction operation available on Difficulty 10. Its mission pool combines Illuminate Overseer command towers with Automaton Strider patrols in a map layout with no natural chokepoints, producing enemy density and aggression that community testing puts approximately 2.3× the median Difficulty 10 completion rate. The Illuminate faction returned in Patch 6.1.0 (March 2026) and Oshaune was not rebalanced as part of that release. No subsequent patch has addressed the spawn table. It is an outlier that has never been formally acknowledged in any patch notes.",
+    proposedChange:
+      "Audit Oshaune D10 enemy spawn tables and reduce patrol spawn rate by 30% to bring it in line with other Difficulty 10 operations. Cap simultaneous patrol counts to match non-mixed-faction missions. If tri-faction operations are intended to be harder, document that design intent explicitly so players can make informed loadout decisions.",
+    category: "balance",
+    submitterEmail: "oshaune.survivor@helldivers.net",
+  },
 ];
 
 async function main() {
@@ -325,7 +348,7 @@ async function main() {
     console.log(`  [${i + 1}/${ISSUES.length}] ${issue.title.slice(0, 70)}…`);
   }
 
-  console.log("\nSeed complete. 20 real HD2 community issues loaded — votes reset to zero.");
+  console.log("\nSeed complete. 22 HD2 community issues loaded — votes reset to zero.");
 }
 
 main()
