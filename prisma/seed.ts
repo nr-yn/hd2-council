@@ -207,6 +207,18 @@ const ISSUES: {
     submitterEmail: "minimap.citizen@gmail.com",
   },
 
+  // ── GOVERNANCE ────────────────────────────────────────────────────────────
+  {
+    id: "issue-rehire-general-spitz",
+    title: "Rehire General Spitz — community manager fired for supporting players during the PSN controversy",
+    description:
+      "In May 2024, Arrowhead community manager 'General Spitz' was fired after publicly advising players to review-bomb Steam and request refunds in response to Sony's mandatory PSN account-linking requirement — a requirement that would have banned Helldivers 2 in 177 countries without PSN availability. Spitz was acting in direct support of the player base at significant personal risk. Following the firing, over 13,800 players signed a Change.org petition demanding reinstatement, and the incident was covered by PC Gamer, Kotaku, and GameRant. Arrowhead has made no official statement on the dismissal. Spitz publicly acknowledged community support but stated they could not discuss the circumstances of removal.",
+    proposedChange:
+      "Arrowhead should publish an official statement explaining the basis for the dismissal. If the termination was based solely on Spitz's public support for players during a manufacturer-imposed crisis, reinstatement should be considered and the company's community management policy reviewed to clarify whether staff may publicly advocate for player interests. At minimum, the community is owed transparency.",
+    category: "content",
+    submitterEmail: "spitz.supporter@super-earth.gov",
+  },
+
   // ── CONTENT ───────────────────────────────────────────────────────────────
   {
     id: "issue-no-free-endgame-progression",
@@ -348,7 +360,7 @@ async function main() {
     console.log(`  [${i + 1}/${ISSUES.length}] ${issue.title.slice(0, 70)}…`);
   }
 
-  console.log("\nSeed complete. 22 HD2 community issues loaded — votes reset to zero.");
+  console.log("\nSeed complete. 23 HD2 community issues loaded — votes reset to zero.");
 }
 
 main()
