@@ -10,6 +10,8 @@ const ISSUES: {
   proposedChange: string;
   category: "balance" | "bug" | "qol" | "content";
   submitterEmail: string;
+  externalSignatures?: number;
+  externalSource?: string;
 }[] = [
   // ── BALANCE — Controversial nerfs ─────────────────────────────────────────
   {
@@ -187,6 +189,8 @@ const ISSUES: {
       "Arrowhead should publish an official statement explaining the basis for the dismissal. If the termination was based solely on Spitz's public support for players during a manufacturer-imposed crisis, reinstatement should be considered and the company's community management policy reviewed to clarify whether staff may publicly advocate for player interests. At minimum, the community is owed transparency.",
     category: "content",
     submitterEmail: "spitz.supporter@super-earth.gov",
+    externalSignatures: 13811,
+    externalSource: "Change.org",
   },
 
   // ── CONTENT ───────────────────────────────────────────────────────────────
@@ -211,6 +215,8 @@ const ISSUES: {
       "Restore Steam availability in all 177 countries where the game was delisted following the PSN controversy. If regional PSN availability is a hard requirement from Sony, publish a binding timeline for expanding PSN access or negotiate a regional exception for Helldivers 2. Players who purchased the game before the delisting and have been unable to play deserve a resolution.",
     category: "content",
     submitterEmail: "region.lock.matters@super-earth.gov",
+    externalSignatures: 330000,
+    externalSource: "Steam reviews",
   },
   {
     id: "issue-xbox-platform-exclusion",
@@ -221,6 +227,8 @@ const ISSUES: {
       "Sony should greenlight a Helldivers 2 Xbox release. If a full Xbox port is not feasible, publish a clear statement on the platform decision so the community can stop waiting on an unconfirmed possibility. Cross-play with existing PlayStation and PC players should be included at launch.",
     category: "content",
     submitterEmail: "xbox.helldivers@super-earth.gov",
+    externalSignatures: 133575,
+    externalSource: "Change.org",
   },
   {
     id: "issue-galactic-war-scripted-narrative",
@@ -231,6 +239,8 @@ const ISSUES: {
       "Publish a clear, binding framework explaining how Galactic War outcomes are calculated — specifically the relationship between player liberation percentage, time, and Game Master intervention. If narrative overrides occur, they should be announced transparently as 'story events' rather than presented as organic outcomes. Community trust requires honesty about the system's actual mechanics.",
     category: "content",
     submitterEmail: "galactic.democracy@super-earth.gov",
+    externalSignatures: 2630,
+    externalSource: "Steam reviews (single day)",
   },
   {
     id: "issue-exo-experts-mechs-paywall",
@@ -241,6 +251,8 @@ const ISSUES: {
       "Gameplay systems — stratagems, vehicles, mission types — must remain free for all players. Paid Warbonds should be restricted to cosmetic items (armour, emotes, banners) and weapon variants. If mechs are to remain Warbond-exclusive, they should be moved to a free-tier unlock within 90 days of launch. Publish an explicit policy commitment distinguishing cosmetic from gameplay Warbond content.",
     category: "content",
     submitterEmail: "mech.democracy@super-earth.gov",
+    externalSignatures: 8700,
+    externalSource: "Discord downvotes",
   },
 
   // ── 2026 COMMUNITY OUTCRY — New issues seeded April 2026 ─────────────────
@@ -347,6 +359,10 @@ async function main() {
     const specialNotes = JSON.stringify({
       submitterEmail: issue.submitterEmail,
       proposedChange: issue.proposedChange,
+      ...(issue.externalSignatures !== undefined && {
+        externalSignatures: issue.externalSignatures,
+        externalSource: issue.externalSource,
+      }),
     });
 
     const existingMotion = await prisma.motion.findFirst({

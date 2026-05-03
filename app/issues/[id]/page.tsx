@@ -99,7 +99,8 @@ export default async function IssuePage({
       return JSON.parse(motion.specialNotes ?? "{}") as {
         submitterEmail?: string;
         proposedChange?: string;
-        changeOrgUrl?: string;
+        externalSignatures?: number;
+        externalSource?: string;
       };
     } catch {
       return {};
@@ -206,6 +207,30 @@ export default async function IssuePage({
           </div>
         </div>
       </div>
+
+      {/* ── External Signal ─────────────────────────── */}
+      {notes.externalSignatures !== undefined && (
+        <div
+          className="flex items-center justify-between px-5 py-3"
+          style={{ backgroundColor: "var(--se-panel)", borderLeft: "2px solid var(--se-gold)" }}
+        >
+          <span
+            className="display text-xs tracking-widest"
+            style={{ color: "var(--se-gold)", letterSpacing: ".3em", fontSize: "11px" }}
+          >
+            ▸ EXTERNAL SIGNAL
+          </span>
+          <span className="display tabular-nums" style={{ color: "var(--se-gold)", fontSize: "1.4rem", lineHeight: 1 }}>
+            {notes.externalSignatures.toLocaleString()}
+          </span>
+          <span
+            className="display text-xs tracking-widest text-right"
+            style={{ color: "var(--se-hint)", letterSpacing: ".2em", fontSize: "11px" }}
+          >
+            {notes.externalSource?.toUpperCase()}
+          </span>
+        </div>
+      )}
 
       {/* ── Problem Statement ────────────────────────── */}
       {agendaItem.description && (
