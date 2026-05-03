@@ -383,3 +383,45 @@ function ProposedChange({ text, accent, textColor = "var(--se-text)" }: { text: 
       </div>
     );
   }
+
+  return (
+    <div className="space-y-3">
+      {numbered.map((item, i) => {
+        const match = item.match(/^(\d+)\.\s+([\s\S]*)/);
+        if (!match) return (
+          <p key={i} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: textColor, lineHeight: "1.75" }}>
+            {item}
+          </p>
+        );
+        const [, num, body] = match;
+        const firstStop = body.trim().search(/\.(?:\s|$)/);
+        const headline = firstStop >= 0 ? body.trim().slice(0, firstStop + 1) : body.trim();
+        const detail = firstStop >= 0 ? body.trim().slice(firstStop + 1).trim() : "";
+        return (
+          <div
+            key={i}
+            className="flex gap-4 p-4"
+            style={{ borderLeft: `2px solid ${accent}`, backgroundColor: "var(--se-black)" }}
+          >
+            <span
+              className="display shrink-0 tabular-nums"
+              style={{ color: accent, fontSize: "1.4rem", lineHeight: 1, opacity: 0.7, minWidth: "1.5rem" }}
+            >
+              {num}
+            </span>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold" style={{ color: textColor, lineHeight: "1.6" }}>
+                {headline}
+              </p>
+              {detail && (
+                <p className="text-sm leading-relaxed" style={{ color: textColor, lineHeight: "1.75", opacity: 0.75 }}>
+                  {detail}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

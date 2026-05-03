@@ -102,7 +102,7 @@ export default function SubmitIssueForm() {
         >
           TRACK YOUR REPORT →
         </a>
-        <p className="text-xs" style={{ color: "var(--se-text-faint)", fontSize: "10px" }}>
+        <p className="text-xs" style={{ color: "var(--se-hint)", fontSize: "11px" }}>
           Bookmark: {trackUrl}
         </p>
         <button
@@ -241,13 +241,13 @@ function Field({
     <div>
       <p
         className="display text-xs mb-2"
-        style={{ color: accent ?? "var(--se-text-faint)", letterSpacing: ".25em", fontSize: "9px" }}
+        style={{ color: accent ?? "var(--se-hint)", letterSpacing: ".25em", fontSize: "11px" }}
       >
         {label}
       </p>
       {children}
       {hint && (
-        <p className="text-xs mt-1" style={{ color: "var(--se-text-faint)", fontSize: "11px" }}>
+        <p className="text-xs mt-1" style={{ color: "var(--se-hint)", fontSize: "11px" }}>
           {hint}
         </p>
       )}

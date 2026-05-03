@@ -10,6 +10,7 @@ function renderMarkdown(md: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong style="color:#d4e8c2">$1</strong>')
     .replace(/\*(.+?)\*/g, '<em style="color:#a3c9a3">$1</em>')
     .replace(/^---$/gm, '<hr style="border-color:#1e3a1e;margin:2rem 0">')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#4ade80;text-decoration:underline;text-underline-offset:3px">$1</a>')
     .replace(/\n\n/g, '</p><p class="text-sm leading-relaxed mb-3" style="color:#a3c9a3">')
     .replace(/\n/g, "<br>");
 }
@@ -41,14 +42,14 @@ export default async function PetitionPage({
       <Link
         href="/petitions"
         className="text-xs tracking-widest uppercase transition-colors"
-        style={{ color: "#4a6b4a" }}
+        style={{ color: "#6b9a6b" }}
       >
         &larr; Back to Petitions
       </Link>
 
       <div
         className="border rounded p-2 text-center text-xs tracking-widest uppercase"
-        style={{ backgroundColor: "#0a1a0a", borderColor: "#1e3a1e", color: "#4a6b4a" }}
+        style={{ backgroundColor: "#0a1a0a", borderColor: "#1e3a1e", color: "#6b9a6b" }}
       >
         Published{" "}
         {publishedAt.toLocaleDateString("en-US", {

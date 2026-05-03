@@ -12,7 +12,7 @@ export default function SignInPage() {
           >
             HD2 Council
           </h1>
-          <p className="text-sm mt-2 tracking-wide" style={{ color: "#4a6b4a" }}>
+          <p className="text-sm mt-2 tracking-wide" style={{ color: "#6b9a6b" }}>
             Sign in to vote and participate
           </p>
         </div>
@@ -24,7 +24,7 @@ export default function SignInPage() {
           <a
             href="/auth/recover"
             className="text-xs tracking-widest uppercase transition-colors"
-            style={{ color: "#4a6b4a" }}
+            style={{ color: "#6b9a6b" }}
           >
             Forgot access? →
           </a>

@@ -271,4 +271,3 @@ export default async function IssuesPage() {
     </div>
   );
 }
-                                             

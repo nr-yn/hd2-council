@@ -83,7 +83,7 @@ export default async function TrackIssuePage({
       <Link
         href="/issues"
         className="display text-xs tracking-widest transition-opacity hover:opacity-60"
-        style={{ color: "var(--se-text-dim)", letterSpacing: ".25em", fontSize: "10px" }}
+        style={{ color: "var(--se-text-dim)", letterSpacing: ".25em", fontSize: "11px" }}
       >
         ← BACK TO DOSSIER
       </Link>
@@ -109,7 +109,7 @@ export default async function TrackIssuePage({
 
       {/* Issue summary */}
       <div className="p-5 space-y-3" style={{ backgroundColor: "var(--se-panel)" }}>
-        <p className="display text-xs" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em", fontSize: "9px" }}>
+        <p className="display text-xs" style={{ color: "var(--se-hint)", letterSpacing: ".3em", fontSize: "11px" }}>
           YOUR FIELD REPORT
         </p>
         <p className="display text-sm" style={{ color: "var(--se-text)" }}>
@@ -132,7 +132,7 @@ export default async function TrackIssuePage({
             Proposed: {notes.proposedChange}
           </p>
         )}
-        <p className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+        <p className="text-xs" style={{ color: "var(--se-hint)" }}>
           Filed:{" "}
           {motion.createdAt.toLocaleDateString("en-US", {
             year: "numeric",
@@ -160,10 +160,10 @@ export default async function TrackIssuePage({
 
       {status === "pending" && (
         <div className="text-center">
-          <p className="display text-xs" style={{ color: "var(--se-text-faint)", letterSpacing: ".25em", fontSize: "9px" }}>
+          <p className="display text-xs" style={{ color: "var(--se-hint)", letterSpacing: ".25em", fontSize: "11px" }}>
             BOOKMARK THIS PAGE TO CHECK YOUR STATUS
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--se-text-faint)", fontSize: "11px" }}>
+          <p className="text-xs mt-1" style={{ color: "var(--se-hint)", fontSize: "11px" }}>
             {`/issues/track/${agendaItem.id}`}
           </p>
         </div>

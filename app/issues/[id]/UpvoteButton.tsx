@@ -46,7 +46,7 @@ export default function UpvoteButton({ issueId, initialVotes, votesRemaining }: 
         <p className="display text-xs tracking-widest" style={{ color: "#4ade80", letterSpacing: ".3em" }}>
           ✓ VOICE RECORDED — FOR DEMOCRACY
         </p>
-        <p className="display text-xs" style={{ color: "var(--se-text-faint)", fontSize: "9px", letterSpacing: ".2em" }}>
+        <p className="display text-xs" style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".2em" }}>
           {votes.toLocaleString()} VOICES · {remaining} VOTES REMAINING THIS CYCLE
         </p>
       </div>
@@ -70,7 +70,7 @@ export default function UpvoteButton({ issueId, initialVotes, votesRemaining }: 
       >
         {loading ? "TRANSMITTING..." : atLimit ? "VOTE LIMIT REACHED" : "CAST VOICE"}
       </button>
-      <p className="display text-xs" style={{ color: "var(--se-text-faint)", fontSize: "9px", letterSpacing: ".2em" }}>
+      <p className="display text-xs" style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".2em" }}>
         {atLimit ? "VOTE ALLOCATION EXHAUSTED FOR THIS CYCLE" : `${remaining} VOTES REMAINING THIS CYCLE`}
       </p>
       {error && (

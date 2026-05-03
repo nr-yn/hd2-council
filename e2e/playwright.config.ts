@@ -20,13 +20,14 @@ export default defineConfig({
   },
 
   webServer: {
-    command: `next dev --port ${TEST_PORT}`,
+    command: `node_modules\\.bin\\next.CMD dev --port ${TEST_PORT}`,
     url: `http://localhost:${TEST_PORT}`,
     reuseExistingServer: false,
     timeout: 60_000,
     cwd: "../",
     env: {
-      DATABASE_URL: "file:./e2e/test.db",
+      DATABASE_URL: "postgresql://platform:platform@localhost:5433/platform_test",
+      APP_URL: `http://localhost:${TEST_PORT}`,
       NODE_ENV: "test",
       ADMIN_EMAIL: "admin@example.com",
       NEXT_PUBLIC_APP_URL: `http://localhost:${TEST_PORT}`,

@@ -99,7 +99,7 @@ export default async function HomePage() {
         <div className="cb-gold p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="pulse-live" />
-            <span className="display text-xs tracking-widest" style={{ color: "var(--se-green)", letterSpacing: ".3em", fontSize: "10px" }}>
+            <span className="display text-xs tracking-widest" style={{ color: "var(--se-green)", letterSpacing: ".3em", fontSize: "11px" }}>
               {cycle.status === "voting" ? "VOTING OPEN — CAST YOUR VOICE"
                 : cycle.status === "drafting" ? "DRAFTING — PETITION BEING COMPILED"
                 : "SUBMISSIONS OPEN — FILE YOUR REPORT"}
@@ -141,10 +141,10 @@ export default async function HomePage() {
         </div>
       ) : (
         <div className="cb-gold p-6 text-center hazard-gold">
-          <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-faint)", letterSpacing: ".3em" }}>
+          <p className="display text-sm tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
             ── NO ACTIVE VOTING CYCLE ──
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--se-text-faint)" }}>
+          <p className="text-xs mt-1" style={{ color: "var(--se-text-dim)" }}>
             STAND BY FOR NEXT PRIORITY DISPATCH
           </p>
         </div>
@@ -215,7 +215,7 @@ function TacticalStat({
       </p>
       <p
         className="display mt-1"
-        style={{ color: "var(--se-text-faint)", fontSize: "9px", letterSpacing: ".3em" }}
+        style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".3em" }}
       >
         {label}
       </p>
@@ -257,7 +257,7 @@ function MissionCard({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <p className="display text-xs mb-3" style={{ color: accent, fontSize: "9px", letterSpacing: ".35em" }}>
+      <p className="display text-xs mb-3" style={{ color: accent, fontSize: "11px", letterSpacing: ".35em" }}>
         {code} ──
       </p>
       <p className="display text-base mb-2" style={{ color: "var(--se-text)" }}>
@@ -266,7 +266,7 @@ function MissionCard({
       <p className="text-xs leading-relaxed mb-4" style={{ color: "var(--se-text-dim)" }}>
         {body}
       </p>
-      <p className="display text-xs" style={{ color: accent, fontSize: "10px", letterSpacing: ".2em" }}>
+      <p className="display text-xs" style={{ color: accent, fontSize: "11px", letterSpacing: ".2em" }}>
         {actionLabel}
       </p>
     </Link>

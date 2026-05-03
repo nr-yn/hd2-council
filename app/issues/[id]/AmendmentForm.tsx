@@ -65,7 +65,7 @@ export function AmendmentForm({ issueId }: { issueId: string }) {
     <form onSubmit={handleSubmit} className="space-y-3">
       <p
         className="display text-xs"
-        style={{ color: "var(--se-text-faint)", letterSpacing: ".25em", fontSize: "9px" }}
+        style={{ color: "var(--se-hint)", letterSpacing: ".25em", fontSize: "11px" }}
       >
         PROPOSE AMENDMENT ({text.length}/600)
       </p>
@@ -111,7 +111,7 @@ export function AmendmentForm({ issueId }: { issueId: string }) {
           type="button"
           onClick={() => { setOpen(false); setText(""); setError(""); }}
           className="display text-xs transition-opacity hover:opacity-60"
-          style={{ color: "var(--se-text-faint)", letterSpacing: ".2em", fontSize: "10px" }}
+          style={{ color: "var(--se-text-dim)", letterSpacing: ".2em", fontSize: "11px" }}
         >
           CANCEL
         </button>

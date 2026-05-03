@@ -43,7 +43,7 @@ export default async function PetitionsPage() {
         >
           Community Petitions
         </h1>
-        <p className="text-xs mt-1" style={{ color: "#4a6b4a" }}>
+        <p className="text-xs mt-1" style={{ color: "#6b9a6b" }}>
           Formal documents compiled from community votes — presented to the development team.
         </p>
       </div>
@@ -53,10 +53,10 @@ export default async function PetitionsPage() {
           className="border rounded p-8 text-center"
           style={{ backgroundColor: "#0d1a0d", borderColor: "#1e3a1e" }}
         >
-          <p className="text-sm tracking-widest uppercase" style={{ color: "#4a6b4a" }}>
+          <p className="text-sm tracking-widest uppercase" style={{ color: "#6b9a6b" }}>
             No petitions published yet.
           </p>
-          <p className="text-xs mt-2" style={{ color: "#4a6b4a" }}>
+          <p className="text-xs mt-2" style={{ color: "#6b9a6b" }}>
             Petitions are generated at the end of each voting cycle.
           </p>
         </div>
@@ -76,7 +76,7 @@ export default async function PetitionsPage() {
                 >
                   {p.name}
                 </p>
-                <p className="text-xs shrink-0" style={{ color: "#4a6b4a" }}>
+                <p className="text-xs shrink-0" style={{ color: "#6b9a6b" }}>
                   {p.publishedAt.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "short",

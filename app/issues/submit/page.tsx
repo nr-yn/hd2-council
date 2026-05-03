@@ -10,7 +10,7 @@ export default function SubmitIssuePage() {
         >
           Submit an Issue
         </h1>
-        <p className="text-xs mt-2 leading-relaxed" style={{ color: "#4a6b4a" }}>
+        <p className="text-xs mt-2 leading-relaxed" style={{ color: "var(--se-hint)" }}>
           Report a balance problem, bug, quality-of-life concern, or content request. Your
           submission will be reviewed by a moderator before being approved for the community vote.
         </p>

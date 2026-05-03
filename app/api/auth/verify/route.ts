@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? req.nextUrl.origin;
 
   const fail = (error: string) => {
-    const u = new URL("/auth/sign-in", req.nextUrl.origin);
+    const u = new URL("/auth/sign-in", baseUrl);
     u.searchParams.set("error", error);
     return NextResponse.redirect(u);
   };
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
     prisma.magicLinkToken.update({ where: { token }, data: { used: true } }),
   ]);
 
-  const response = NextResponse.redirect(new URL("/", req.nextUrl.origin));
+  const response = NextResponse.redirect(new URL("/", baseUrl));
   response.cookies.set(SESSION_COOKIE, sessionId, sessionCookieOptions);
   return response;
 }

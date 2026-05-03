@@ -12,12 +12,12 @@ export default function RecoverPage() {
           >
             HD2 Council
           </h1>
-          <p className="text-sm mt-2 tracking-wide" style={{ color: "#4a6b4a" }}>
+          <p className="text-sm mt-2 tracking-wide" style={{ color: "#6b9a6b" }}>
             Recover account access
           </p>
         </div>
 
-        <p className="text-xs text-center tracking-wide" style={{ color: "#4a6b4a" }}>
+        <p className="text-xs text-center tracking-wide" style={{ color: "#6b9a6b" }}>
           Lost access to your account? Enter your email and we&apos;ll send you a recovery link.
         </p>
 
@@ -29,7 +29,7 @@ export default function RecoverPage() {
           <a
             href="/auth/sign-in"
             className="text-xs tracking-widest uppercase transition-colors"
-            style={{ color: "#4a6b4a" }}
+            style={{ color: "#6b9a6b" }}
           >
             ← Back to sign in
           </a>

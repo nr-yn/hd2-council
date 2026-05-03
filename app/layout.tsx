@@ -208,4 +208,10 @@ function NavItem({
   return (
     <Link
       href={href}
-      className="display px-3 py-1 text-xs tracking-widest transition-opacity h
+      className="display px-3 py-1 text-xs tracking-widest transition-opacity hover:opacity-70"
+      style={{ color: "var(--se-text-dim)", fontSize: "11px" }}
+    >
+      {label}
+    </Link>
+  );
+}

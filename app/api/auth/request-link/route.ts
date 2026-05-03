@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
   const expiresAt = new Date(Date.now() + TOKEN_TTL_MINUTES * 60_000);
   await prisma.magicLinkToken.create({ data: { email, token, expiresAt } });
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3004";
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3004";
   const link = `${baseUrl}/api/auth/verify?token=${token}`;
 
   try {

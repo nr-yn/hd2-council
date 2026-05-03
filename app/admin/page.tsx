@@ -97,7 +97,7 @@ export default async function AdminPage() {
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <p className="display text-xs mb-1" style={{ color: "var(--se-text-faint)", letterSpacing: ".35em", fontSize: "10px" }}>
+        <p className="display text-xs mb-1" style={{ color: "var(--se-hint)", letterSpacing: ".35em", fontSize: "11px" }}>
           COMMAND TERMINAL — RESTRICTED ACCESS
         </p>
         <h1 className="display glow-gold" style={{ color: "var(--se-gold)", fontSize: "1.8rem", letterSpacing: ".06em" }}>
@@ -122,7 +122,7 @@ export default async function AdminPage() {
             {pendingIssues.length}
           </span>
         </div>
-        <p className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+        <p className="text-xs" style={{ color: "var(--se-hint)" }}>
           Auto-moderation handles clean submissions and spam. Only edge cases reach this queue.
         </p>
 
@@ -134,7 +134,7 @@ export default async function AdminPage() {
 
         {pendingIssues.length === 0 ? (
           <div className="cb-gold p-4 text-center">
-            <p className="display text-xs" style={{ color: "var(--se-text-faint)", letterSpacing: ".25em" }}>
+            <p className="display text-xs" style={{ color: "var(--se-text-dim)", letterSpacing: ".25em" }}>
               NO PENDING REPORTS — QUEUE CLEAR
             </p>
           </div>
@@ -145,15 +145,15 @@ export default async function AdminPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1.5 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="display text-xs" style={{ color: CATEGORY_COLORS[issue.category] ?? "#4ade80", fontSize: "9px", letterSpacing: ".25em" }}>
+                      <span className="display text-xs" style={{ color: CATEGORY_COLORS[issue.category] ?? "#4ade80", fontSize: "11px", letterSpacing: ".25em" }}>
                         {issue.category.toUpperCase()}
                       </span>
                       {issue.submitterEmail && (
-                        <span className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+                        <span className="text-xs" style={{ color: "var(--se-hint)" }}>
                           · {issue.submitterEmail}
                         </span>
                       )}
-                      <span className="text-xs" style={{ color: "var(--se-text-faint)" }}>
+                      <span className="text-xs" style={{ color: "var(--se-hint)" }}>
                         · {issue.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
                     </div>
@@ -191,7 +191,7 @@ export default async function AdminPage() {
             <div className="flex items-center gap-3 pb-3" style={{ borderBottom: "1px solid var(--se-gold-dim)" }}>
               <span
                 className="display text-xs px-2 py-0.5"
-                style={{ backgroundColor: phase.color, color: "var(--se-black)", letterSpacing: ".2em", fontSize: "9px" }}
+                style={{ backgroundColor: phase.color, color: "var(--se-black)", letterSpacing: ".2em", fontSize: "11px" }}
               >
                 {phase.label}
               </span>
@@ -203,7 +203,7 @@ export default async function AdminPage() {
                 <p className="display text-base glow-gold" style={{ color: "var(--se-gold)" }}>
                   {cycle.title}
                 </p>
-                <div className="text-xs space-y-0.5" style={{ color: "var(--se-text-faint)" }}>
+                <div className="text-xs space-y-0.5" style={{ color: "var(--se-hint)" }}>
                   <p>
                     Submission opened:{" "}
                     {cycleState.submissionOpenedAt
@@ -224,7 +224,7 @@ export default async function AdminPage() {
                   )}
                 </div>
                 {cycle.status === "drafting" && (
-                  <p className="text-xs mt-2" style={{ color: "var(--se-text-faint)" }}>
+                  <p className="text-xs mt-2" style={{ color: "var(--se-hint)" }}>
                     Petition will include top {TOP_N_ISSUES} issues (min {MIN_VOTES_FOR_PETITION} votes) — up to {CATEGORY_CAPS.balance} balance, {CATEGORY_CAPS.bug} bug, {CATEGORY_CAPS.qol} QoL, {CATEGORY_CAPS.content} content.
                   </p>
                 )}
@@ -234,7 +234,7 @@ export default async function AdminPage() {
           </div>
         ) : (
           <div className="cb-gold p-4 text-center hazard-gold">
-            <p className="display text-xs" style={{ color: "var(--se-text-faint)", letterSpacing: ".25em" }}>
+            <p className="display text-xs" style={{ color: "var(--se-text-dim)", letterSpacing: ".25em" }}>
               NO ACTIVE CYCLE
             </p>
           </div>
@@ -254,7 +254,7 @@ export default async function AdminPage() {
                 <Link
                   href={`/petitions/${p.id}`}
                   className="display text-xs transition-opacity hover:opacity-70"
-                  style={{ color: "var(--se-gold)", letterSpacing: ".2em", fontSize: "10px" }}
+                  style={{ color: "var(--se-gold)", letterSpacing: ".2em", fontSize: "11px" }}
                 >
                   VIEW →
                 </Link>
