@@ -1,5 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@platform/db";
+
+export const metadata: Metadata = {
+  title: "Community Petitions",
+  description:
+    "Formal petitions compiled from community votes on Helldivers 2 balance issues and quality-of-life problems — presented to Arrowhead Game Studios.",
+  openGraph: {
+    title: "Community Petitions | HD2 Community Council",
+    description:
+      "Formal petitions compiled from community votes — presented to Arrowhead Game Studios.",
+    url: "https://democracy.quorate.cc/petitions",
+  },
+  alternates: { canonical: "https://democracy.quorate.cc/petitions" },
+};
 
 interface ParsedPetition {
   id: string;

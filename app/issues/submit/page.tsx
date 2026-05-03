@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import SubmitIssueForm from "./SubmitIssueForm";
+
+export const metadata: Metadata = {
+  title: "File a Field Report",
+  robots: { index: false, follow: false },
+};
 
 export default function SubmitIssuePage() {
   return (

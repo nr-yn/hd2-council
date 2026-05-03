@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getOpenCycle } from "@/lib/cycle";
 import { prisma } from "@platform/db";
+
+export const metadata: Metadata = {
+  title: "HD2 Community Council — Helldivers 2 Balance & Bug Tracker",
+  description:
+    "The Helldivers 2 community votes on balance issues, undocumented nerfs, bugs, and quality-of-life problems. Top issues become formal petitions sent to Arrowhead Game Studios.",
+  alternates: { canonical: "https://democracy.quorate.cc" },
+};
 
 async function getCycleStats(cycleId: string) {
   const agendaItems = await prisma.agendaItem.findMany({
