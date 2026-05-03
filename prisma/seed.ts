@@ -201,7 +201,59 @@ const ISSUES: {
     submitterEmail: "free.player@super-earth.gov",
   },
 
+  // ── PLATFORM & GOVERNANCE ─────────────────────────────────────────────────
+  {
+    id: "issue-psn-mandatory-linking-region-lock",
+    title: "Mandatory PSN linking locked out 177 countries — regional delisting still unresolved",
+    description:
+      "In May 2024, Sony retroactively required all PC players to link a PlayStation Network account — including the 177 countries where PSN is unavailable. Helldivers 2 was simultaneously delisted from Steam in those regions, cutting off players who had already purchased the game. The backlash triggered one of the largest Steam review bombs in history: over 330,000 negative reviews in 72 hours. Sony reversed the PSN mandate, and Valve issued out-of-policy refunds waiving the 2-hour rule due to the scale of the community action. However, the regional delisting was not reversed — Helldivers 2 remained unavailable for purchase across most of Africa, the Middle East, and Southeast Asia. Arrowhead CEO Johan Pilestedt publicly stated: 'I won't rest in my desire to have it available everywhere.' That commitment has not been fulfilled.",
+    proposedChange:
+      "Restore Steam availability in all 177 countries where the game was delisted following the PSN controversy. If regional PSN availability is a hard requirement from Sony, publish a binding timeline for expanding PSN access or negotiate a regional exception for Helldivers 2. Players who purchased the game before the delisting and have been unable to play deserve a resolution.",
+    category: "content",
+    submitterEmail: "region.lock.matters@super-earth.gov",
+  },
+  {
+    id: "issue-xbox-platform-exclusion",
+    title: "Helldivers 2 Xbox exclusion — 133,000-signature petition demands platform parity",
+    description:
+      "Helldivers 2 launched as a PS5/PC exclusive despite its co-op premise being a natural fit for cross-platform play. Since launch, a Change.org petition calling on Sony to port the game to Xbox has surpassed 133,575 signatures — the largest active Helldivers 2 petition by a significant margin. Arrowhead has expressed openness to an Xbox version, but the decision rests entirely with Sony, who has made no official commitment. The petition's growth has been sustained over 12+ months, indicating ongoing demand rather than a brief spike of interest.",
+    proposedChange:
+      "Sony should greenlight a Helldivers 2 Xbox release. If a full Xbox port is not feasible, publish a clear statement on the platform decision so the community can stop waiting on an unconfirmed possibility. Cross-play with existing PlayStation and PC players should be included at launch.",
+    category: "content",
+    submitterEmail: "xbox.helldivers@super-earth.gov",
+  },
+  {
+    id: "issue-galactic-war-scripted-narrative",
+    title: "Galactic War outcomes feel predetermined — player effort is overridden by Game Masters",
+    description:
+      "The community has mounted sustained protests claiming Arrowhead's Game Masters override actual player liberation progress to force predetermined story outcomes. The controversy peaked in May 2025 when the Battle for Equality-on-Sea was capped at 99.9783% held and the loss appeared scripted regardless of player turnout. This triggered 2,630 negative Steam reviews in a single day — approximately 40 times the daily average — primarily from the Chinese player base. The top-voted question in the April 2026 Reddit AMA was explicitly about the Galactic War's lost sense of consequence. Johan Pilestedt acknowledged it as a 'painful' community concern. The core complaint: if player numbers don't actually determine outcomes, the game's central premise is theatrical.",
+    proposedChange:
+      "Publish a clear, binding framework explaining how Galactic War outcomes are calculated — specifically the relationship between player liberation percentage, time, and Game Master intervention. If narrative overrides occur, they should be announced transparently as 'story events' rather than presented as organic outcomes. Community trust requires honesty about the system's actual mechanics.",
+    category: "content",
+    submitterEmail: "galactic.democracy@super-earth.gov",
+  },
+  {
+    id: "issue-exo-experts-mechs-paywall",
+    title: "Exo Experts Warbond locks mechs behind a paywall — first time gameplay systems require purchase",
+    description:
+      "The April 2026 Exo Experts Warbond (1,000 Super Credits, ~$10) was the first Warbond to lock entire vehicle stratagems — the EXO-51 Lumberer and EXO-55 Breakthrough exosuits — behind a paid unlock. Previous Warbonds locked weapons and armour; this was the first time a major gameplay system with dedicated mechanics was monetised this way. The Discord announcement video received over 8,700 downvotes. Steam reviews dropped from 'Very Positive' to 'Mixed'. The April 2026 Reddit AMA became a flashpoint for the decision, with players explicitly comparing a $40 premium game's model to free-to-play titles. Arrowhead lead Johan Pilestedt described the community feedback as 'painful to read'.",
+    proposedChange:
+      "Gameplay systems — stratagems, vehicles, mission types — must remain free for all players. Paid Warbonds should be restricted to cosmetic items (armour, emotes, banners) and weapon variants. If mechs are to remain Warbond-exclusive, they should be moved to a free-tier unlock within 90 days of launch. Publish an explicit policy commitment distinguishing cosmetic from gameplay Warbond content.",
+    category: "content",
+    submitterEmail: "mech.democracy@super-earth.gov",
+  },
+
   // ── 2026 COMMUNITY OUTCRY — New issues seeded April 2026 ─────────────────
+  {
+    id: "issue-super-credits-total-cost",
+    title: "Total Warbond cost exceeds $100 in a $40 game — the premium ceiling has been crossed",
+    description:
+      "As of early 2026, the cumulative cost of all Helldivers 2 Warbonds and Superstore content significantly exceeds $100 — on top of the $40 base price. Reddit user `not_a_xeno`'s widely-shared post framed the issue precisely: 'A 40-dollar game should not have over $100 worth of purchasable game content. It isn't skins, it is the gameplay.' This triggered the March 2026 review bomb coordinated by r/HelldiversUnfiltered, with Steam reviews dropping to Mixed. This is distinct from the F2P grind complaint: it is a specific objection to the absolute dollar ceiling being crossed in a premium-priced title, including stratagems and gameplay systems locked behind paid content — not merely the difficulty of earning Super Credits for free.",
+    proposedChange:
+      "Cap the total cost of all Warbonds at a reasonable multiple of the base game price (e.g. 2×). Retire older Warbonds into a permanent discount tier (600 SC) after 12 months. Introduce a 'Season Pass' bundle option that gives access to all Warbonds released within a calendar year for a flat fee. At minimum, publish a commitment that gameplay-affecting content (stratagems, vehicles) will never sit behind an additional paywall in a full-priced game.",
+    category: "content",
+    submitterEmail: "premium.ceiling@super-earth.gov",
+  },
 
   {
     id: "issue-super-credits-grind-23-warbonds",
@@ -330,7 +382,7 @@ async function main() {
     console.log(`  [${i + 1}/${ISSUES.length}] ${issue.title.slice(0, 70)}…`);
   }
 
-  console.log("\nSeed complete. 20 HD2 community issues loaded — votes reset to zero.");
+  console.log("\nSeed complete. 25 HD2 community issues loaded — votes reset to zero.");
 }
 
 main()

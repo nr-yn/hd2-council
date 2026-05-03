@@ -1,6 +1,44 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@platform/db";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const artifact = await prisma.artifact.findUnique({ where: { id } });
+  if (!artifact || artifact.mimeType !== "text/markdown") return { title: "Petition Not Found" };
+
+  let meta: { body?: string; publishedAt?: string | null } = {};
+  try { meta = JSON.parse(artifact.description ?? "{}"); } catch { return { title: "Petition Not Found" }; }
+  if (!meta.publishedAt) return { title: "Petition Not Found" };
+
+  const plain = (meta.body ?? "").replace(/[#*\[\]_>`-]/g, "").replace(/\n+/g, " ").trim();
+  const snippet = plain.slice(0, 155).trimEnd() + (plain.length > 155 ? "…" : "");
+  const url = `https://democracy.quorate.cc/petitions/${id}`;
+
+  return {
+    title: artifact.name,
+    description: snippet,
+    openGraph: {
+      title: `${artifact.name} | HD2 Community Council`,
+      description: snippet,
+      url,
+      type: "article",
+      images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "HD2 Community Council" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${artifact.name} | HD2 Community Council`,
+      description: snippet,
+      images: ["/og-image.jpg"],
+    },
+    alternates: { canonical: url },
+  };
+}
 
 function renderMarkdown(md: string): string {
   return md
