@@ -1,7 +1,7 @@
 import { prisma } from "@platform/db";
 import { COMMUNITY_ORG_ID, ADMIN_EMAIL } from "../lib/config";
 
-const CYCLE_ID = "hd2-cycle-seed-1";
+const CYCLE_ID = "hd2-cycle-1777627062724";
 
 const ISSUES: {
   id: string;
@@ -301,7 +301,7 @@ async function main() {
       id: CYCLE_ID,
       organisationId: COMMUNITY_ORG_ID,
       meetingType: "council",
-      title: "Voting Cycle — Season 1",
+      title: "Voting Cycle — Season 2",
       date: new Date(),
       status: "pending",
     },
