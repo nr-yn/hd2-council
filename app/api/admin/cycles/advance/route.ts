@@ -67,7 +67,7 @@ export async function POST(_req: NextRequest) {
       include: { motions: true },
     });
 
-    const draft = generatePetitionDraft(cycle.title, agendaItems, {
+    const draft = generatePetitionDraft(cycle.title ?? "", agendaItems, {
       topN: TOP_N_ISSUES,
       minVotes: MIN_VOTES_FOR_PETITION,
       categoryCaps: CATEGORY_CAPS,
