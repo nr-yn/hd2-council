@@ -86,15 +86,24 @@ export default async function PetitionPage({
       </Link>
 
       <div
-        className="border rounded p-2 text-center text-xs tracking-widest uppercase"
-        style={{ backgroundColor: "#0a1a0a", borderColor: "#1e3a1e", color: "#6b9a6b" }}
+        className="border rounded p-2 flex items-center justify-between gap-4"
+        style={{ backgroundColor: "#0a1a0a", borderColor: "#1e3a1e" }}
       >
-        Published{" "}
-        {publishedAt.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
+        <span className="text-xs tracking-widest uppercase" style={{ color: "#6b9a6b" }}>
+          Published{" "}
+          {publishedAt.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
+        <a
+          href={`/api/documents/${id}/pdf`}
+          className="text-xs tracking-widest uppercase transition-opacity hover:opacity-70"
+          style={{ color: "#4ade80" }}
+        >
+          Download PDF ↓
+        </a>
       </div>
 
       <article

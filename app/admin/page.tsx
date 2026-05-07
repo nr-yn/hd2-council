@@ -1,9 +1,10 @@
 import { getSession } from "@/lib/session";
-import { ADMIN_EMAIL, TOP_N_ISSUES, MIN_VOTES_FOR_PETITION, CATEGORY_CAPS, CYCLE_MIN_VOTING_DAYS } from "@/lib/config";
+import { ADMIN_EMAIL, CYCLE_MIN_VOTING_DAYS } from "@/lib/config";
 import { getOpenCycle, getCycleStateArtifact, parseCycleState, autoAdvanceIfNeeded } from "@/lib/cycle";
 import { prisma } from "@platform/db";
 import Link from "next/link";
 import AdminActions from "./AdminActions";
+import DraftEditor from "./DraftEditor";
 
 const CATEGORY_COLORS: Record<string, string> = {
   balance: "#4ade80",
@@ -164,6 +165,20 @@ export default async function AdminPage() {
         })
         .then((ms) => ms.reduce((sum, m) => sum + (m.votesFor ?? 0), 0))
     : 0;
+
+  // Draft artifact for the current drafting cycle
+  const draftData = cycle?.status === "drafting"
+    ? await prisma.artifact.findFirst({
+        where: { meetingId: cycle.id, mimeType: "application/x-petition-draft" },
+        orderBy: { uploadedAt: "desc" },
+      }).then((a) => {
+        if (!a) return null;
+        try {
+          const m = JSON.parse(a.description ?? "{}") as { body?: string };
+          return { artifactId: a.id, body: m.body ?? "" };
+        } catch { return null; }
+      })
+    : null;
 
   // Published petitions for this cycle
   const publishedPetitions = cycle
@@ -411,7 +426,7 @@ export default async function AdminPage() {
                 </p>
                 {cycle.status === "drafting" && (
                   <p className="text-xs mt-2" style={{ color: "var(--se-hint)" }}>
-                    Petition will include top {TOP_N_ISSUES} issues (min {MIN_VOTES_FOR_PETITION} votes) — up to {CATEGORY_CAPS.balance} balance, {CATEGORY_CAPS.bug} bug, {CATEGORY_CAPS.qol} QoL, {CATEGORY_CAPS.content} content.
+                    Edit the petition draft below before publishing.
                   </p>
                 )}
               </div>
@@ -427,7 +442,28 @@ export default async function AdminPage() {
         )}
       </section>
 
-      {/* Section 3: Published Petitions */}
+      {/* Section: Draft Editor — visible during drafting phase */}
+      {cycle?.status === "drafting" && (
+        <section className="space-y-3">
+          <h2 className="display" style={{ color: "var(--se-blue)", fontSize: "1rem", letterSpacing: ".08em" }}>
+            PETITION DRAFT
+          </h2>
+          {draftData ? (
+            <DraftEditor
+              initialBody={draftData.body}
+              artifactId={draftData.artifactId}
+            />
+          ) : (
+            <div className="p-4" style={{ backgroundColor: "var(--se-panel)" }}>
+              <p className="text-xs" style={{ color: "var(--se-red)" }}>
+                No draft artifact found. The draft is generated automatically when opening drafting.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Section: Published Petitions */}
       {publishedPetitions.length > 0 && (
         <section className="space-y-3">
           <h2 className="display" style={{ color: "var(--se-amber)", fontSize: "1rem", letterSpacing: ".08em" }}>

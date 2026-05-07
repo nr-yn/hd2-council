@@ -1,13 +1,24 @@
 import { prisma } from "@platform/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
-import { ADMIN_EMAIL, COMMUNITY_ORG_ID, CYCLE_MIN_VOTING_DAYS } from "@/lib/config";
+import {
+  ADMIN_EMAIL,
+  COMMUNITY_ORG_ID,
+  CYCLE_MIN_VOTING_DAYS,
+  TOP_N_ISSUES,
+  MIN_VOTES_FOR_PETITION,
+  CATEGORY_CAPS,
+  CATEGORY_GUARANTEES,
+} from "@/lib/config";
 import { transitionCycle, getCycleStateArtifact, parseCycleState } from "@/lib/cycle";
+import { generatePetitionDraft } from "@/lib/petition-draft";
 
 const TRANSITIONS: Record<string, string> = {
   pending: "voting",
   voting: "drafting",
 };
+
+export const PETITION_DRAFT_MIME = "application/x-petition-draft";
 
 export async function POST(_req: NextRequest) {
   const session = await getSession();
@@ -48,6 +59,30 @@ export async function POST(_req: NextRequest) {
   }
 
   await transitionCycle(cycle.id, nextStatus);
+
+  // When entering drafting, generate the editable markdown draft from vote results
+  if (nextStatus === "drafting") {
+    const agendaItems = await prisma.agendaItem.findMany({
+      where: { meetingId: cycle.id },
+      include: { motions: true },
+    });
+
+    const draft = generatePetitionDraft(cycle.title, agendaItems, {
+      topN: TOP_N_ISSUES,
+      minVotes: MIN_VOTES_FOR_PETITION,
+      categoryCaps: CATEGORY_CAPS,
+      categoryGuarantees: CATEGORY_GUARANTEES,
+    });
+
+    await prisma.artifact.create({
+      data: {
+        meetingId: cycle.id,
+        name: `Draft — ${cycle.title}`,
+        mimeType: PETITION_DRAFT_MIME,
+        description: JSON.stringify({ body: draft, generatedAt: new Date().toISOString() }),
+      },
+    });
+  }
 
   return Response.json({ newStatus: nextStatus });
 }
