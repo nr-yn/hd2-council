@@ -31,6 +31,8 @@ export default defineConfig({
       NODE_ENV: "test",
       ADMIN_EMAIL: "admin@example.com",
       NEXT_PUBLIC_APP_URL: `http://localhost:${TEST_PORT}`,
+      E2E_BYPASS_VOTING_MIN_DAYS: "true",
+      GOVERNANCE_BRAIN_URL: "http://localhost:9999",
       // No Resend key — magic links print to stdout in test
     },
   },

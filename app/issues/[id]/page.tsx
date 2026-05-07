@@ -35,13 +35,13 @@ export async function generateMetadata({
       description: snippet,
       url,
       type: "article",
-      images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "HD2 Community Council" }],
+      images: [{ url: "https://democracy.quorate.cc/opengraph-image", width: 1200, height: 630, alt: "HD2 Community Council" }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${item.title} | HD2 Community Council`,
       description: snippet,
-      images: ["/og-image.jpg"],
+      images: ["https://democracy.quorate.cc/opengraph-image"],
     },
     alternates: {
       canonical: url,
@@ -65,13 +65,16 @@ export default async function IssuePage({
 
   const agendaItem = await prisma.agendaItem.findUnique({
     where: { id },
-    include: { motions: true, meeting: true },
+    include: {
+      motions: { orderBy: { createdAt: "asc" } },
+      meeting: true,
+    },
   });
 
   if (!agendaItem) notFound();
 
-  const motion = agendaItem.motions[0];
-  if (!motion || motion.outcome !== "passed") notFound();
+  const motion = agendaItem.motions.find((m) => m.outcome === "passed");
+  if (!motion) notFound();
 
   const session = await getSession();
   const isAdmin = session?.person.email === ADMIN_EMAIL;
@@ -107,13 +110,53 @@ export default async function IssuePage({
     }
   })();
 
+  const passedAmendments = agendaItem.motions
+    .filter((m) => m.motionType === "amendment" && m.outcome === "passed")
+    .map((m) => {
+      try {
+        const n = JSON.parse(m.specialNotes ?? "{}") as {
+          appliedText?: string;
+          synthesized?: string;
+          proposedChange?: string;
+        };
+        return {
+          id: m.id,
+          appliedText: n.appliedText ?? n.synthesized ?? n.proposedChange ?? "",
+          createdAt: m.createdAt,
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter((a): a is { id: string; appliedText: string; createdAt: Date } => a !== null && a.appliedText !== "");
+
   const category = motion.resolutionType ?? "qol";
   const cat = CATEGORY_STYLE[category] ?? CATEGORY_STYLE.qol;
   const isBug = category === "bug";
   const cycleStatus = agendaItem.meeting.status;
   const votingOpen = cycleStatus === "voting";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DiscussionForumPosting",
+    headline: agendaItem.title,
+    description: agendaItem.description ?? undefined,
+    url: `https://democracy.quorate.cc/issues/${id}`,
+    datePublished: motion.createdAt.toISOString(),
+    author: { "@type": "Organization", name: "HD2 Community Council" },
+    interactionStatistic: {
+      "@type": "InteractionCounter",
+      interactionType: "https://schema.org/VoteAction",
+      userInteractionCount: motion.votesFor ?? 0,
+    },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div className="max-w-2xl space-y-6">
 
       {/* ── Back ─────────────────────────────────────── */}
@@ -155,7 +198,7 @@ export default async function IssuePage({
           `,
         }}
       >
-        <div className="flex items-start justify-between gap-6">
+        <div className="flex items-center justify-between gap-6">
           <div className="flex-1 min-w-0 space-y-3">
             <p className="display text-xs tracking-widest" style={{ color: cat.color, fontSize: "9px", letterSpacing: ".35em" }}>
               REPORT CLASSIFICATION: {cat.label}
@@ -237,7 +280,7 @@ export default async function IssuePage({
         <section className="p-5" style={{ backgroundColor: "var(--se-panel)" }}>
           <div
             className="flex items-center gap-3 mb-3 pb-2"
-            style={{ borderBottom: "1px solid var(--se-text-faint)", opacity: 1 }}
+            style={{ borderBottom: "1px solid var(--se-text-faint)" }}
           >
             <span
               className="display text-xs tracking-widest"
@@ -246,7 +289,13 @@ export default async function IssuePage({
               ▸ PROBLEM STATEMENT
             </span>
           </div>
-          <ProposedChange text={agendaItem.description} accent="var(--se-amber)" textColor="var(--se-text-dim)" />
+          <div className="space-y-3">
+            {agendaItem.description.split(/\n\s*\n/).map((para, i) => (
+              <p key={i} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--se-text-dim)", lineHeight: "1.75" }}>
+                {para.trim()}
+              </p>
+            ))}
+          </div>
         </section>
       )}
 
@@ -281,6 +330,53 @@ export default async function IssuePage({
         </section>
       )}
 
+
+      {/* ── Amendment Log ────────────────────────────────── */}
+      {passedAmendments.length > 0 && (
+        <section className="p-5 space-y-3" style={{ backgroundColor: "var(--se-panel)" }}>
+          <div
+            className="flex items-center gap-3 pb-2"
+            style={{ borderBottom: "1px solid var(--se-text-faint)" }}
+          >
+            <span
+              className="display text-xs tracking-widest"
+              style={{ color: "var(--se-blue)", letterSpacing: ".3em", fontSize: "11px" }}
+            >
+              ▸ AMENDMENT LOG
+            </span>
+            <span
+              className="display text-xs px-1.5 py-0.5"
+              style={{ backgroundColor: "var(--se-blue)", color: "var(--se-black)", fontSize: "9px", letterSpacing: ".15em" }}
+            >
+              {passedAmendments.length}
+            </span>
+          </div>
+          <div className="space-y-3">
+            {passedAmendments.map((a) => (
+              <div
+                key={a.id}
+                className="p-3"
+                style={{ borderLeft: "2px solid var(--se-blue)", backgroundColor: "var(--se-black)" }}
+              >
+                <p
+                  className="display text-xs mb-1.5"
+                  style={{ color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".25em" }}
+                >
+                  AMENDED{" "}
+                  {a.createdAt.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--se-text-dim)", lineHeight: "1.7" }}>
+                  {a.appliedText}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── Amendment Section (voting phase only) ───────── */}
       {session && votingOpen && (
@@ -347,12 +443,14 @@ export default async function IssuePage({
         )}
       </div>
     </div>
+    </>
   );
 }
 
 function ProposedChange({ text, accent, textColor = "var(--se-text)" }: { text: string; accent: string; textColor?: string }) {
-  // Split on numbered list items (1. 2. 3. …) — render each as a distinct block
-  const numbered = text.split(/(?=\n?\d+\.\s)/).map(s => s.trim()).filter(Boolean);
+  // Split on numbered list items that start on their own line (1. 2. 3. …)
+  // Require \n before the digit so "Difficulty 10. Description" is NOT treated as a list
+  const numbered = text.split(/(?=\n\d+\.\s)/).map(s => s.trim()).filter(Boolean);
   const hasNumbered = numbered.length > 1 || /^\d+\.\s/.test(text.trim());
 
   if (!hasNumbered) {

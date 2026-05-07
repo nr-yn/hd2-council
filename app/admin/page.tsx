@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/session";
-import { ADMIN_EMAIL, TOP_N_ISSUES, MIN_VOTES_FOR_PETITION, CATEGORY_CAPS } from "@/lib/config";
+import { ADMIN_EMAIL, TOP_N_ISSUES, MIN_VOTES_FOR_PETITION, CATEGORY_CAPS, CYCLE_MIN_VOTING_DAYS } from "@/lib/config";
 import { getOpenCycle, getCycleStateArtifact, parseCycleState, autoAdvanceIfNeeded } from "@/lib/cycle";
 import { prisma } from "@platform/db";
 import Link from "next/link";
@@ -45,17 +45,20 @@ export default async function AdminPage() {
   const cycleState = parseCycleState(stateArtifact);
   const phase = cycle ? (PHASE_LABELS[cycle.status] ?? PHASE_LABELS.pending) : null;
 
-  // Pending issues — outcome null, submitted but not yet reviewed
+  // Pending submissions — new issues not yet reviewed (non-amendment pending motions)
   const pendingItems = cycle
     ? await prisma.agendaItem.findMany({
-        where: { meetingId: cycle.id, motions: { some: { outcome: null } } },
+        where: {
+          meetingId: cycle.id,
+          motions: { some: { outcome: null, motionType: { not: "amendment" } } },
+        },
         include: { motions: true },
         orderBy: { orderIndex: "asc" },
       })
     : [];
 
   const pendingIssues = pendingItems.map((a) => {
-    const motion = a.motions.find((m) => m.outcome === null)!;
+    const motion = a.motions.find((m) => m.outcome === null && m.motionType !== "amendment")!;
     const notes = (() => {
       try {
         return JSON.parse(motion.specialNotes ?? "{}") as {
@@ -76,6 +79,91 @@ export default async function AdminPage() {
       createdAt: motion.createdAt,
     };
   });
+
+  // Pending amendments — flagged by Governance Brain for human review
+  type PendingAmendment = {
+    motionId: string;
+    issueId: string;
+    issueTitle: string;
+    currentProposedChange: string | null;
+    amendmentText: string;
+    synthesized: string | null;
+    aiVerdict: string;
+    aiReason: string;
+    submitterEmail: string | null;
+    createdAt: Date;
+  };
+
+  const pendingAmendments: PendingAmendment[] = cycle
+    ? await prisma.motion
+        .findMany({
+          where: {
+            motionType: "amendment",
+            outcome: null,
+            agendaItem: { meetingId: cycle.id },
+          },
+          include: {
+            agendaItem: { include: { motions: true } },
+          },
+          orderBy: { createdAt: "asc" },
+        })
+        .then((rows) =>
+          rows.map((m) => {
+            const notes = (() => {
+              try {
+                return JSON.parse(m.specialNotes ?? "{}") as {
+                  submitterEmail?: string;
+                  proposedChange?: string;
+                  synthesized?: string | null;
+                  aiVerdict?: string;
+                  aiReason?: string;
+                };
+              } catch {
+                return {};
+              }
+            })();
+            const mainMotion = m.agendaItem.motions.find(
+              (mo) => mo.outcome === "passed" && (mo.motionType === "ordinary" || mo.motionType === "procedural")
+            );
+            const mainNotes = (() => {
+              try {
+                return JSON.parse(mainMotion?.specialNotes ?? "{}") as { proposedChange?: string };
+              } catch {
+                return {};
+              }
+            })();
+            return {
+              motionId: m.id,
+              issueId: m.agendaItemId,
+              issueTitle: m.agendaItem.title,
+              currentProposedChange: mainNotes.proposedChange ?? null,
+              amendmentText: notes.proposedChange ?? "",
+              synthesized: notes.synthesized ?? null,
+              aiVerdict: notes.aiVerdict ?? "flag",
+              aiReason: notes.aiReason ?? "",
+              submitterEmail: notes.submitterEmail ?? null,
+              createdAt: m.createdAt,
+            };
+          })
+        )
+    : [];
+
+  // Days voting has been open (for minimum enforcement display)
+  const votingAgeDays = (() => {
+    if (!cycle || cycle.status !== "voting") return null;
+    const since = cycleState.votingOpenedAt ? new Date(cycleState.votingOpenedAt) : cycle.date;
+    return (Date.now() - since.getTime()) / 86_400_000;
+  })();
+
+  // Total voices cast (admin-only — not shown publicly)
+  const totalVoices = cycle
+    ? await prisma.motion
+        .findMany({
+          where: { outcome: "passed", agendaItem: { meetingId: cycle.id } },
+          select: { votesFor: true },
+        })
+        .then((ms) => ms.reduce((sum, m) => sum + (m.votesFor ?? 0), 0))
+    : 0;
 
   // Published petitions for this cycle
   const publishedPetitions = cycle
@@ -179,7 +267,87 @@ export default async function AdminPage() {
         )}
       </section>
 
-      {/* Section 2: Active Cycle */}
+      {/* Section 2: Pending Amendments */}
+      {pendingAmendments.length > 0 && (
+        <section className="space-y-3">
+          <div className="flex items-center gap-3">
+            <h2 className="display" style={{ color: "var(--se-blue)", fontSize: "1rem", letterSpacing: ".08em" }}>
+              PENDING AMENDMENTS
+            </h2>
+            <span className="display px-2 py-0.5 text-xs" style={{ backgroundColor: "var(--se-blue)", color: "var(--se-black)" }}>
+              {pendingAmendments.length}
+            </span>
+          </div>
+          <p className="text-xs" style={{ color: "var(--se-hint)" }}>
+            Community amendments flagged by Governance Brain for human review. Approving applies the synthesized text to the live issue.
+          </p>
+          <div className="space-y-3">
+            {pendingAmendments.map((a) => (
+              <div key={a.motionId} className="p-4 space-y-3" style={{ backgroundColor: "var(--se-panel)", borderLeft: "2px solid var(--se-blue)" }}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2 min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="display text-xs px-1.5 py-0.5" style={{ backgroundColor: "var(--se-blue)", color: "var(--se-black)", fontSize: "10px", letterSpacing: ".2em" }}>
+                        AMENDMENT
+                      </span>
+                      <Link href={`/issues/${a.issueId}`} className="display text-xs hover:opacity-70" style={{ color: "var(--se-gold)", letterSpacing: ".15em", fontSize: "11px" }}>
+                        {a.issueTitle} →
+                      </Link>
+                      {a.submitterEmail && (
+                        <span className="text-xs" style={{ color: "var(--se-hint)" }}>· {a.submitterEmail}</span>
+                      )}
+                      <span className="text-xs" style={{ color: "var(--se-hint)" }}>
+                        · {a.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                    </div>
+
+                    {/* AI verdict */}
+                    <div className="flex items-start gap-2">
+                      <span
+                        className="display text-xs px-1.5 py-0.5 shrink-0"
+                        style={{
+                          backgroundColor: a.aiVerdict === "auto-approve" ? "var(--se-green)" : "var(--se-amber)",
+                          color: "var(--se-black)",
+                          fontSize: "9px",
+                          letterSpacing: ".2em",
+                        }}
+                      >
+                        {a.aiVerdict === "auto-approve" ? "AI: APPROVE" : "AI: FLAGGED"}
+                      </span>
+                      {a.aiReason && (
+                        <p className="text-xs" style={{ color: "var(--se-hint)" }}>{a.aiReason}</p>
+                      )}
+                    </div>
+
+                    {/* Current → proposed */}
+                    <div className="space-y-1.5">
+                      {a.currentProposedChange && (
+                        <div style={{ borderLeft: "2px solid var(--se-text-faint)", paddingLeft: "8px" }}>
+                          <p className="display text-xs mb-0.5" style={{ color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".2em" }}>CURRENT</p>
+                          <p className="text-xs leading-relaxed" style={{ color: "var(--se-text-dim)" }}>{a.currentProposedChange}</p>
+                        </div>
+                      )}
+                      <div style={{ borderLeft: "2px solid var(--se-amber)", paddingLeft: "8px" }}>
+                        <p className="display text-xs mb-0.5" style={{ color: "var(--se-amber)", fontSize: "9px", letterSpacing: ".2em" }}>SUBMITTED AMENDMENT</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "var(--se-text)" }}>{a.amendmentText}</p>
+                      </div>
+                      {a.synthesized && (
+                        <div style={{ borderLeft: "2px solid var(--se-green)", paddingLeft: "8px" }}>
+                          <p className="display text-xs mb-0.5" style={{ color: "var(--se-green)", fontSize: "9px", letterSpacing: ".2em" }}>SYNTHESIZED (WILL BE APPLIED)</p>
+                          <p className="text-xs leading-relaxed" style={{ color: "var(--se-text)" }}>{a.synthesized}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <AdminActions issueId={a.issueId} type="issue" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Section 3: Active Cycle */}
       <section className="space-y-3">
         <h2 className="display" style={{ color: "var(--se-amber)", fontSize: "1rem", letterSpacing: ".08em" }}>
           ACTIVE CYCLE
@@ -223,6 +391,24 @@ export default async function AdminPage() {
                     </p>
                   )}
                 </div>
+                {votingAgeDays !== null && (
+                  <p className="text-xs mt-2" style={{ color: votingAgeDays >= CYCLE_MIN_VOTING_DAYS ? "var(--se-green)" : "var(--se-amber)" }}>
+                    {votingAgeDays >= CYCLE_MIN_VOTING_DAYS
+                      ? `ELIGIBLE TO CLOSE — voting open ${Math.floor(votingAgeDays)}d`
+                      : `MINIMUM NOT MET — ${Math.ceil(CYCLE_MIN_VOTING_DAYS - votingAgeDays)}d remaining of ${CYCLE_MIN_VOTING_DAYS}-day minimum`}
+                  </p>
+                )}
+                <p className="text-xs mt-3 font-mono" style={{ color: "var(--se-gold)" }}>
+                  VOICES CAST: {totalVoices.toLocaleString()}
+                  {totalVoices < 1000 && (
+                    <span style={{ color: "var(--se-hint)" }}>
+                      {" "}— {(1000 - totalVoices).toLocaleString()} to target
+                    </span>
+                  )}
+                  {totalVoices >= 1000 && (
+                    <span style={{ color: "var(--se-green)" }}> — TARGET MET</span>
+                  )}
+                </p>
                 {cycle.status === "drafting" && (
                   <p className="text-xs mt-2" style={{ color: "var(--se-hint)" }}>
                     Petition will include top {TOP_N_ISSUES} issues (min {MIN_VOTES_FOR_PETITION} votes) — up to {CATEGORY_CAPS.balance} balance, {CATEGORY_CAPS.bug} bug, {CATEGORY_CAPS.qol} QoL, {CATEGORY_CAPS.content} content.

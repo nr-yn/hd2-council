@@ -46,7 +46,7 @@ export async function POST(_req: NextRequest) {
 
   const allApproved = agendaItems
     .map((a) => {
-      const motion = a.motions.find((m) => m.outcome === "passed");
+      const motion = a.motions.find((m) => m.outcome === "passed" && m.motionType !== "amendment");
       if (!motion) return null;
       const notes = (() => {
         try { return JSON.parse(motion.specialNotes ?? "{}") as { proposedChange?: string }; }

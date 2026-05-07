@@ -154,7 +154,7 @@ test.describe("Authenticated citizen — vote and amend", () => {
     await expect(page.getByRole("button", { name: /CAST VOICE/i })).not.toBeVisible();
   });
 
-  test("9. citizen submits an amendment during voting phase", async ({ page }) => {
+  test("9. citizen submits an amendment during voting phase", { timeout: 90_000 }, async ({ page }) => {
     await page.goto(`/issues/${PRESEEDED_ISSUE_ID}`);
 
     // Open the amendment form (collapsed by default)
@@ -168,7 +168,7 @@ test.describe("Authenticated citizen — vote and amend", () => {
     );
     await page.getByRole("button", { name: /submit amendment/i }).click();
 
-    await expect(page.getByText(/amendment filed/i)).toBeVisible();
+    await expect(page.getByText(/amendment filed/i)).toBeVisible({ timeout: 60_000 });
   });
 });
 

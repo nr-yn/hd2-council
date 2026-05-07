@@ -33,7 +33,7 @@ export async function POST(
   const motion = agendaItem.motions.find((m) => m.outcome === null);
   if (!motion) return Response.json({ error: "No pending motion" }, { status: 400 });
 
-  // Preserve existing specialNotes, just add rejectionReason if rejecting
+  // Preserve existing specialNotes, add rejectionReason if rejecting
   let specialNotes = motion.specialNotes;
   if (body.action === "reject" && body.rejectionReason) {
     try {
@@ -52,6 +52,34 @@ export async function POST(
       specialNotes,
     },
   });
+
+  // Amendment approval: write the applied text back to the main motion's proposedChange
+  if (motion.motionType === "amendment" && body.action === "approve") {
+    const mainMotion = agendaItem.motions.find(
+      (m) => m.outcome === "passed" && (m.motionType === "ordinary" || m.motionType === "procedural")
+    );
+
+    if (mainMotion) {
+      try {
+        const amendNotes = JSON.parse(motion.specialNotes ?? "{}") as {
+          synthesized?: string;
+          proposedChange?: string;
+        };
+        const appliedText = amendNotes.synthesized ?? amendNotes.proposedChange ?? "";
+
+        if (appliedText) {
+          const mainNotes = JSON.parse(mainMotion.specialNotes ?? "{}") as Record<string, unknown>;
+          mainNotes.proposedChange = appliedText;
+          await prisma.motion.update({
+            where: { id: mainMotion.id },
+            data: { specialNotes: JSON.stringify(mainNotes) },
+          });
+        }
+      } catch {
+        // Record is set to passed — admin can manually reconcile if note update fails
+      }
+    }
+  }
 
   return Response.json({ ok: true });
 }
