@@ -27,6 +27,11 @@ export const metadata: Metadata = {
   },
   description:
     "The Helldivers 2 community votes on balance issues, undocumented nerfs, and quality-of-life problems. Top issues become formal petitions sent to Arrowhead Game Studios.",
+  keywords: [
+    "Helldivers 2", "HD2", "Arrowhead Game Studios", "balance issues", "bug tracker",
+    "community feedback", "nerfs", "stratagems", "weapons balance", "quality of life",
+    "HD2 balance", "Helldivers balance patch", "community petition", "game feedback",
+  ],
   openGraph: {
     type: "website",
     siteName: "HD2 Community Council",
@@ -34,18 +39,19 @@ export const metadata: Metadata = {
     description:
       "The Helldivers 2 community votes on balance issues, undocumented nerfs, and quality-of-life problems. Top issues become formal petitions sent to Arrowhead.",
     url: BASE_URL,
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "HD2 Community Council" }],
+    images: [{ url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630, alt: "HD2 Community Council" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "HD2 Community Council — Helldivers 2 Balance & Bug Tracker",
     description:
       "Vote on Helldivers 2 balance issues. Top issues become petitions sent to Arrowhead Game Studios.",
-    images: ["/og-image.jpg"],
+    images: [`${BASE_URL}/opengraph-image`],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true },
   },
   alternates: {
     canonical: BASE_URL,
@@ -62,6 +68,26 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${rajdhani.variable} ${shareTechMono.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "HD2 Community Council",
+              url: BASE_URL,
+              description:
+                "The Helldivers 2 community votes on balance issues, undocumented nerfs, bugs, and quality-of-life problems. Top issues become formal petitions sent to Arrowhead Game Studios.",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: `${BASE_URL}/issues`,
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
+      </head>
       <body className="min-h-screen antialiased">
         {/* ── Header ──────────────────────────────────────── */}
         <header

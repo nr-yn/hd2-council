@@ -6,9 +6,13 @@ export const dynamic = "force-dynamic";
 const BASE = "https://democracy.quorate.cc";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [approvedItems, petitions] = await Promise.all([
+  const [approvedItems, pendingItems, petitions] = await Promise.all([
     prisma.agendaItem.findMany({
       where: { motions: { some: { outcome: "passed" } } },
+      select: { id: true },
+    }),
+    prisma.agendaItem.findMany({
+      where: { motions: { none: { outcome: "passed" } } },
       select: { id: true },
     }),
     prisma.artifact.findMany({
@@ -17,12 +21,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ]);
 
-  const issueUrls: MetadataRoute.Sitemap = approvedItems.map((item) => ({
-    url: `${BASE}/issues/${item.id}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const now = new Date();
+  const issueUrls: MetadataRoute.Sitemap = [
+    ...approvedItems.map((item) => ({
+      url: `${BASE}/issues/${item.id}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...pendingItems.map((item) => ({
+      url: `${BASE}/issues/${item.id}`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.6,
+    })),
+  ];
 
   const petitionUrls: MetadataRoute.Sitemap = petitions
     .filter((a) => {
