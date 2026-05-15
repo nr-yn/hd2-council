@@ -11,6 +11,13 @@ const CATEGORIES = [
   { value: "content", label: "Content — New Features / Requests" },
 ] as const;
 
+const TITLE_EXAMPLES: Record<string, string> = {
+  balance: 'e.g. "Railgun M-25 insufficient damage vs Charger on Difficulty 9+"',
+  bug:     'e.g. "Orbital Precision Strike fails to detonate on Automaton Fabricator"',
+  qol:     'e.g. "Stratagem cooldown timer not visible during Hellpod descent"',
+  content: 'e.g. "Add explosive resist armour passive for Bile Titan fights"',
+};
+
 type Category = (typeof CATEGORIES)[number]["value"];
 
 const CATEGORY_COLOR: Record<string, string> = {
@@ -157,13 +164,16 @@ export default function SubmitIssueForm() {
       </Field>
 
       {/* Title */}
-      <Field label={`REPORT TITLE (${title.length}/120)`}>
+      <Field
+        label={`REPORT TITLE (${title.length}/120)`}
+        hint={TITLE_EXAMPLES[category]}
+      >
         <input
           type="text"
           aria-label="title"
           value={title}
           onChange={(e) => setTitle(e.target.value.slice(0, 120))}
-          placeholder="Clear, specific issue title — include weapon/mechanic name"
+          placeholder="Name the specific weapon, stratagem, or mechanic"
           style={inputStyle}
           required
           maxLength={120}

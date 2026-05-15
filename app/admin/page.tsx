@@ -274,7 +274,7 @@ export default async function AdminPage() {
                       </p>
                     )}
                   </div>
-                  <AdminActions issueId={issue.id} type="issue" />
+                  <AdminActions issueId={issue.id} type="issue" currentTitle={issue.title} />
                 </div>
               </div>
             ))}
@@ -354,7 +354,7 @@ export default async function AdminPage() {
                       )}
                     </div>
                   </div>
-                  <AdminActions issueId={a.issueId} type="issue" />
+                  <AdminActions issueId={a.issueId} type="issue" currentTitle={a.issueTitle} />
                 </div>
               </div>
             ))}
