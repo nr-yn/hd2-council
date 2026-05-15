@@ -2,7 +2,8 @@ import { prisma } from "@platform/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, COMMUNITY_ORG_ID } from "@/lib/config";
-import { getCycleStateArtifact, parseCycleState } from "@/lib/cycle";
+import { getCycleStateArtifact, parseCycleState, applyStalePolicy } from "@/lib/cycle";
+import { STALE_THRESHOLD_PERCENT, STALE_MIN_KEEP } from "@/lib/config";
 import type { DocumentMeta } from "@platform/documents";
 
 const DRAFT_MIME = "application/x-petition-draft";
@@ -52,6 +53,14 @@ export async function POST(_req: NextRequest) {
   if (!body.trim()) {
     return Response.json({ error: "Draft body is empty" }, { status: 400 });
   }
+
+  // Stale the bottom half of issues before closing — keeps transparency while
+  // signalling to users which reports no longer have active tracking.
+  await applyStalePolicy(cycle.id, {
+    type: "percentile",
+    threshold: STALE_THRESHOLD_PERCENT,
+    minKeep: STALE_MIN_KEEP,
+  });
 
   // Build document metadata from cycle state + session
   const stateArtifact = await getCycleStateArtifact(cycle.id);

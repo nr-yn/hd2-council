@@ -38,6 +38,14 @@ export async function POST(
     return Response.json({ error: "Issue is not approved for voting" }, { status: 400 });
   }
 
+  // Stale issues are archived — no longer accepting votes
+  let motionNotes: { stale?: boolean } = {};
+  try { motionNotes = JSON.parse(motion.specialNotes ?? "{}") as typeof motionNotes; }
+  catch { /* proceed */ }
+  if (motionNotes.stale) {
+    return Response.json({ error: "This issue has been archived — it is no longer under active consideration" }, { status: 403 });
+  }
+
   // Check for existing vote
   const existingVote = await prisma.vote.findFirst({
     where: { motionId: motion.id, voterId: session.personId },

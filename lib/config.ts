@@ -26,3 +26,9 @@ export const CYCLE_MAX_VOTING_DAYS = 365;
 
 // Artifact mime type for cycle state (phase timestamps)
 export const CYCLE_STATE_MIME = "application/x-cycle-state";
+
+// Season cycling — stale policy
+// When a season closes, the bottom STALE_THRESHOLD_PERCENT of issues (by votes) are
+// marked stale and removed from active consideration. Top issues remain visible.
+export const STALE_THRESHOLD_PERCENT = 0.5;  // 0..1 — fraction to stale (0.5 = bottom 50%)
+export const STALE_MIN_KEEP = 1;             // always keep at least this many issues active

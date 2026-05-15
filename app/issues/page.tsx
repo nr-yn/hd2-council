@@ -55,6 +55,7 @@ export default async function IssuesPage() {
             return JSON.parse(motion.specialNotes ?? "{}") as {
               submitterEmail?: string;
               proposedChange?: string;
+              stale?: boolean;
             };
           } catch {
             return {};
@@ -68,6 +69,7 @@ export default async function IssuesPage() {
           votes: motion.votesFor ?? 0,
           submitterEmail: notes.submitterEmail ?? null,
           proposedChange: notes.proposedChange ?? null,
+          stale: notes.stale === true,
         };
       })
       .sort((a, b) => b.votes - a.votes);
@@ -168,8 +170,10 @@ export default async function IssuesPage() {
     orderBy: { orderIndex: "asc" },
   });
 
-  const approvedItems = mapApproved(cycleItemsRaw);
-  const topVotes = approvedItems[0]?.votes ?? 1;
+  const allCycleItems = mapApproved(cycleItemsRaw);
+  const approvedItems = allCycleItems.filter((i) => !i.stale);
+  const staleItems = allCycleItems.filter((i) => i.stale);
+  const topVotes = approvedItems[0]?.votes ?? staleItems[0]?.votes ?? 1;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -364,6 +368,84 @@ export default async function IssuesPage() {
               </Link>
             );
           })}
+        </div>
+      )}
+      {/* ── Archived / Stale Issues ────────────────────── */}
+      {staleItems.length > 0 && (
+        <div className="space-y-3 mt-8">
+          <div
+            className="flex items-center gap-3 py-2"
+            style={{ borderTop: "1px solid var(--se-text-faint)", borderBottom: "1px solid var(--se-text-faint)" }}
+          >
+            <span
+              className="display text-xs tracking-widest"
+              style={{ color: "var(--se-hint)", letterSpacing: ".35em", fontSize: "11px" }}
+            >
+              ── ARCHIVED REPORTS
+            </span>
+            <span
+              className="display text-xs px-1.5 py-0.5"
+              style={{ border: "1px solid var(--se-hint)", color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".15em" }}
+            >
+              {staleItems.length}
+            </span>
+          </div>
+          <p
+            className="display text-xs"
+            style={{ color: "var(--se-hint)", letterSpacing: ".25em", fontSize: "10px", opacity: 0.7 }}
+          >
+            THESE ISSUES ARE NO LONGER UNDER ACTIVE CONSIDERATION — ARCHIVED FOR TRANSPARENCY
+          </p>
+          <div className="space-y-2">
+            {staleItems.map((item) => {
+              const cat = CATEGORY_STYLE[item.category] ?? CATEGORY_STYLE.qol;
+              return (
+                <Link
+                  key={item.id}
+                  href={`/issues/${item.id}`}
+                  className="block p-4 group transition-opacity hover:opacity-70"
+                  style={{
+                    backgroundColor: "var(--se-panel)",
+                    opacity: 0.45,
+                    border: "1px solid var(--se-text-faint)",
+                  }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1 min-w-0">
+                      <span
+                        className="display"
+                        style={{ color: "var(--se-hint)", fontSize: "10px", letterSpacing: ".3em" }}
+                      >
+                        {cat.label}
+                      </span>
+                      <p
+                        className="display text-sm mt-0.5"
+                        style={{ color: "var(--se-text-dim)", letterSpacing: ".03em" }}
+                      >
+                        {item.title}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0 flex items-center gap-3">
+                      <span
+                        className="display text-xs px-2 py-0.5"
+                        style={{ border: "1px solid var(--se-hint)", color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".2em" }}
+                      >
+                        ARCHIVED
+                      </span>
+                      <div>
+                        <p className="display tabular-nums" style={{ color: "var(--se-hint)", fontSize: "1.1rem", lineHeight: 1 }}>
+                          {item.votes.toLocaleString()}
+                        </p>
+                        <p className="display" style={{ color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".2em" }}>
+                          VOICES
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

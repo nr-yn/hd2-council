@@ -104,11 +104,15 @@ export default async function IssuePage({
         proposedChange?: string;
         externalSignatures?: number;
         externalSource?: string;
+        stale?: boolean;
+        staledAt?: string;
       };
     } catch {
       return {};
     }
   })();
+
+  const isStale = notes.stale === true;
 
   const passedAmendments = agendaItem.motions
     .filter((m) => m.motionType === "amendment" && m.outcome === "passed")
@@ -134,7 +138,7 @@ export default async function IssuePage({
   const cat = CATEGORY_STYLE[category] ?? CATEGORY_STYLE.qol;
   const isBug = category === "bug";
   const cycleStatus = agendaItem.meeting.status;
-  const votingOpen = cycleStatus === "voting";
+  const votingOpen = cycleStatus === "voting" && !isStale;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -168,9 +172,42 @@ export default async function IssuePage({
         ← BACK TO DOSSIER
       </Link>
 
+      {/* ── Stale / Archived Banner ──────────────────── */}
+      {isStale && (
+        <div
+          className="flex items-center justify-between px-4 py-3"
+          style={{ backgroundColor: "var(--se-panel)", border: "1px solid var(--se-hint)", opacity: 0.8 }}
+        >
+          <div className="flex items-center gap-3">
+            <span
+              className="display text-xs px-2 py-0.5"
+              style={{ border: "1px solid var(--se-hint)", color: "var(--se-hint)", fontSize: "9px", letterSpacing: ".2em" }}
+            >
+              ARCHIVED
+            </span>
+            <span
+              className="display text-xs"
+              style={{ color: "var(--se-hint)", fontSize: "11px", letterSpacing: ".2em" }}
+            >
+              NO LONGER UNDER ACTIVE CONSIDERATION
+            </span>
+          </div>
+          {notes.staledAt && (
+            <span className="display text-xs" style={{ color: "var(--se-hint)", fontSize: "10px", letterSpacing: ".15em" }}>
+              ARCHIVED{" "}
+              {new Date(notes.staledAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* ── Clearance Banner ─────────────────────────── */}
       <div
-        className="text-center py-1.5"
+        className={`text-center py-1.5${isStale ? " opacity-50" : ""}`}
         style={{
           backgroundColor: cat.color,
           color: "var(--se-black)",
@@ -399,7 +436,10 @@ export default async function IssuePage({
         {!votingOpen ? (
           <div className="text-center">
             <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
-              {cycleStatus === "pending" ? "STAND BY — VOTING PHASE NOT YET OPEN"
+              {isStale
+                ? "ARCHIVED — THIS ISSUE IS NO LONGER UNDER ACTIVE CONSIDERATION"
+                : cycleStatus === "pending"
+                ? "STAND BY — VOTING PHASE NOT YET OPEN"
                 : "VOTING HAS CLOSED — PETITION BEING COMPILED"}
             </p>
           </div>
