@@ -363,6 +363,9 @@ async function main() {
         externalSignatures: issue.externalSignatures,
         externalSource: issue.externalSource,
       }),
+      stale: true,
+      staledAt: new Date().toISOString(),
+      staledReason: "seed",
     });
 
     const existingMotion = await prisma.motion.findFirst({

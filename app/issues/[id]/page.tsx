@@ -138,7 +138,7 @@ export default async function IssuePage({
   const cat = CATEGORY_STYLE[category] ?? CATEGORY_STYLE.qol;
   const isBug = category === "bug";
   const cycleStatus = agendaItem.meeting.status;
-  const votingOpen = cycleStatus === "voting" && !isStale;
+  const votingOpen = cycleStatus === "voting";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -436,9 +436,7 @@ export default async function IssuePage({
         {!votingOpen ? (
           <div className="text-center">
             <p className="display text-xs tracking-widest" style={{ color: "var(--se-text-dim)", letterSpacing: ".3em" }}>
-              {isStale
-                ? "ARCHIVED — THIS ISSUE IS NO LONGER UNDER ACTIVE CONSIDERATION"
-                : cycleStatus === "pending"
+              {cycleStatus === "pending"
                 ? "STAND BY — VOTING PHASE NOT YET OPEN"
                 : "VOTING HAS CLOSED — PETITION BEING COMPILED"}
             </p>
