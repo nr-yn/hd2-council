@@ -6,6 +6,7 @@ import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import UpvoteButton from "./UpvoteButton";
 import { AmendmentForm } from "./AmendmentForm";
+import ShareButtons from "./ShareButtons";
 
 export async function generateMetadata({
   params,
@@ -427,6 +428,15 @@ export default async function IssuePage({
           <AmendmentForm issueId={agendaItem.id} />
         </section>
       )}
+
+      {/* ── Share ────────────────────────────────────── */}
+      <ShareButtons
+        url={`https://democracy.quorate.cc/issues/${agendaItem.id}`}
+        title={agendaItem.title}
+        votes={motion.votesFor ?? 0}
+        proposedChange={notes.proposedChange ?? null}
+        description={agendaItem.description ?? ""}
+      />
 
       {/* ── Vote Section ─────────────────────────────── */}
       <div

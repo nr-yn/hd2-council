@@ -120,5 +120,24 @@ export async function POST(_req: NextRequest) {
     }),
   ]);
 
+  // Discord webhook — fire and forget, never blocks publish
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (webhookUrl) {
+    void fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        embeds: [{
+          title: `📋 ${petitionTitle}`,
+          description: "A new community petition has been published. Your voices have been heard.",
+          url: `https://democracy.quorate.cc/petitions/${artifact.id}`,
+          color: 0xc9a227,
+          fields: [{ name: "View & Download", value: `[Read the petition →](https://democracy.quorate.cc/petitions/${artifact.id})` }],
+          footer: { text: "HD2 Community Council • democracy.quorate.cc" },
+        }],
+      }),
+    }).catch(() => { /* ignore */ });
+  }
+
   return Response.json({ petitionId: artifact.id, nextCycle: nextCycleTitle });
 }

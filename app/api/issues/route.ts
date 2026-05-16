@@ -1,8 +1,70 @@
 import { prisma } from "@platform/db";
 import { NextRequest } from "next/server";
-import { getOrCreateOpenCycle } from "@/lib/cycle";
-import { MAX_SUBMISSIONS_PER_EMAIL_PER_CYCLE } from "@/lib/config";
+import { getOpenCycle, getOrCreateOpenCycle } from "@/lib/cycle";
+import { COMMUNITY_ORG_ID, MAX_SUBMISSIONS_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import { isSpam } from "@/lib/spam-filter";
+
+const BASE_URL = "https://democracy.quorate.cc";
+const VALID_CATEGORIES = new Set(["balance", "bug", "qol", "content"]);
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+  const category = searchParams.get("category") ?? null;
+  const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10), 100);
+
+  if (category && !VALID_CATEGORIES.has(category)) {
+    return Response.json({ error: "Invalid category" }, { status: 400 });
+  }
+
+  const cycle = await getOpenCycle();
+
+  const items = await prisma.agendaItem.findMany({
+    where: {
+      ...(cycle ? { meetingId: cycle.id } : {
+        meeting: { organisationId: COMMUNITY_ORG_ID, meetingType: "council" },
+      }),
+      motions: {
+        some: {
+          outcome: "passed",
+          motionType: { not: "amendment" },
+          ...(category ? { resolutionType: category } : {}),
+        },
+      },
+    },
+    include: {
+      motions: {
+        where: { outcome: "passed", motionType: { not: "amendment" } },
+        take: 1,
+      },
+    },
+    take: limit,
+  });
+
+  const issues = items
+    .map((ai) => {
+      const m = ai.motions[0];
+      if (!m) return null;
+      let stale = false;
+      try { stale = (JSON.parse(m.specialNotes ?? "{}") as { stale?: boolean }).stale === true; } catch { /**/ }
+      return {
+        id: ai.id,
+        title: ai.title,
+        description: ai.description ?? null,
+        category: m.resolutionType ?? null,
+        votes: m.votesFor ?? 0,
+        stale,
+        url: `${BASE_URL}/issues/${ai.id}`,
+      };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .filter((x) => !x.stale)
+    .sort((a, b) => b.votes - a.votes);
+
+  return Response.json(
+    { issues, cycle: cycle ? { id: cycle.id, status: cycle.status, title: cycle.title } : null, total: issues.length },
+    { headers: { "Cache-Control": "public, s-maxage=60" } }
+  );
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as {
