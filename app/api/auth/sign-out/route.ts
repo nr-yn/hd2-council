@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     await deleteSession(sessionId);
   }
 
-  const response = NextResponse.redirect(new URL("/", req.nextUrl.origin));
+  const response = NextResponse.redirect(new URL("/", req.nextUrl.origin), { status: 303 });
   response.cookies.set(SESSION_COOKIE, "", { ...sessionCookieOptions, maxAge: 0 });
   return response;
 }

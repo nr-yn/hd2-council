@@ -53,9 +53,6 @@ export default function SignInForm() {
           A sign-in link was sent to{" "}
           <span style={{ color: "#a3c9a3" }}>{email}</span>.
         </p>
-        <p className="text-xs" style={{ color: "#6b9a6b" }}>
-          In dev mode, check the server console for the link.
-        </p>
         <button
           onClick={() => { setSent(false); setEmail(""); }}
           className="text-xs tracking-widest uppercase mt-2 transition-colors"

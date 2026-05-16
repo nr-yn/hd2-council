@@ -19,10 +19,10 @@ export const MAX_SUBMISSIONS_PER_EMAIL_PER_CYCLE = 3;
 // Voting rate limit — max total votes a single email can cast per cycle
 export const MAX_VOTES_PER_EMAIL_PER_CYCLE = 10;
 
-// Auto-advance thresholds
-// Voting phase ends when total votes reach this, OR the fallback age is exceeded
-export const CYCLE_VOTE_THRESHOLD = 4_000;
-export const CYCLE_MAX_VOTING_DAYS = 30;
+// Voting phase must be open at least this long before admin can close it
+export const CYCLE_MIN_VOTING_DAYS = 30;
+// Safety-net fallback only — season closes at admin discretion, not automatically
+export const CYCLE_MAX_VOTING_DAYS = 365;
 
 // Artifact mime type for cycle state (phase timestamps)
 export const CYCLE_STATE_MIME = "application/x-cycle-state";

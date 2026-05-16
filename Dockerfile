@@ -11,12 +11,13 @@ RUN corepack enable
 # ── deps stage ───────────────────────────────────────────────────────────────
 FROM base AS deps
 WORKDIR /repo
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .pnpmfile.cjs ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .pnpmfile.cjs .npmrc ./
 COPY packages/db/package.json ./packages/db/
 COPY packages/voting/package.json ./packages/voting/
 COPY packages/rbac/package.json ./packages/rbac/
 COPY packages/comms/package.json ./packages/comms/
 COPY packages/templates/package.json ./packages/templates/
+COPY packages/documents/package.json ./packages/documents/
 COPY governance-loop/package.json ./governance-loop/
 COPY apps/hd2-council/package.json ./apps/hd2-council/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
@@ -30,6 +31,7 @@ COPY --from=deps /repo/packages/voting/node_modules ./packages/voting/node_modul
 COPY --from=deps /repo/packages/comms/node_modules ./packages/comms/node_modules
 COPY --from=deps /repo/packages/rbac/node_modules ./packages/rbac/node_modules
 COPY --from=deps /repo/packages/templates/node_modules ./packages/templates/node_modules
+COPY --from=deps /repo/packages/documents/node_modules ./packages/documents/node_modules
 COPY --from=deps /repo/apps/hd2-council/node_modules ./apps/hd2-council/node_modules
 COPY . .
 

@@ -3,7 +3,6 @@ import type { Meeting, Artifact } from "@platform/db";
 import {
   COMMUNITY_ORG_ID,
   CYCLE_STATE_MIME,
-  CYCLE_VOTE_THRESHOLD,
   CYCLE_MAX_VOTING_DAYS,
 } from "./config";
 
@@ -112,38 +111,18 @@ export async function transitionCycle(
   }
 }
 
-// ── Auto-advance: votes threshold OR age fallback ─────────────────────────────
+// ── Auto-advance: safety-net age fallback only ───────────────────────────────
+// Season closes at admin discretion. This fires only after CYCLE_MAX_VOTING_DAYS
+// as an emergency valve (default: 365 days).
 
-/**
- * Called after each vote is cast, and on admin page load.
- * Transitions voting → drafting when either:
- *   - Total votes across all approved issues reaches CYCLE_VOTE_THRESHOLD (4,000)
- *   - Voting phase has been open for CYCLE_MAX_VOTING_DAYS (30 days)
- */
 export async function autoAdvanceIfNeeded(cycle: Meeting): Promise<boolean> {
   if (cycle.status !== "voting") return false;
 
-  // Check 1: total vote count across all approved issues
-  const motions = await prisma.motion.findMany({
-    where: {
-      outcome: "passed",
-      agendaItem: { meetingId: cycle.id },
-    },
-    select: { votesFor: true },
-  });
-  const totalVotes = motions.reduce((sum, m) => sum + (m.votesFor ?? 0), 0);
-
-  if (totalVotes >= CYCLE_VOTE_THRESHOLD) {
-    await transitionCycle(cycle.id, "drafting");
-    return true;
-  }
-
-  // Check 2: age fallback — 30 days since voting opened
   const stateArtifact = await getCycleStateArtifact(cycle.id);
   const state = parseCycleState(stateArtifact);
   const since = state.votingOpenedAt
     ? new Date(state.votingOpenedAt)
-    : cycle.date;                  // fallback to cycle creation date
+    : cycle.date;
 
   const ageDays = (Date.now() - since.getTime()) / 86_400_000;
   if (ageDays >= CYCLE_MAX_VOTING_DAYS) {
