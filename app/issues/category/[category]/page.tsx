@@ -35,10 +35,6 @@ const CATEGORY_META: Record<string, { label: string; color: string; description:
 
 const VALID = new Set(Object.keys(CATEGORY_META));
 
-export async function generateStaticParams() {
-  return Object.keys(CATEGORY_META).map((category) => ({ category }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
   if (!VALID.has(category)) return { title: "Not Found" };
@@ -51,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
       title: `${meta.label} Issues — Helldivers 2`,
       description: meta.description,
       url: `${BASE_URL}/issues/category/${category}`,
-      images: [{ url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630 }],
+      images: [{ url: `${BASE_URL}/api/og`, width: 1200, height: 630 }],
     },
     alternates: { canonical: `${BASE_URL}/issues/category/${category}` },
   };

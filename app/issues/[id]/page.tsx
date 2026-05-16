@@ -6,7 +6,7 @@ import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import UpvoteButton from "./UpvoteButton";
 import { AmendmentForm } from "./AmendmentForm";
-import ShareButtons from "./ShareButtons";
+import ShareButtons from "@/components/ShareButtons";
 
 export async function generateMetadata({
   params,
@@ -36,13 +36,13 @@ export async function generateMetadata({
       description: snippet,
       url,
       type: "article",
-      images: [{ url: "https://democracy.quorate.cc/opengraph-image", width: 1200, height: 630, alt: "HD2 Community Council" }],
+      images: [{ url: "https://democracy.quorate.cc/api/og", width: 1200, height: 630, alt: "HD2 Community Council" }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${item.title} | HD2 Community Council`,
       description: snippet,
-      images: ["https://democracy.quorate.cc/opengraph-image"],
+      images: ["https://democracy.quorate.cc/api/og"],
     },
     alternates: {
       canonical: url,

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description:
       "Browse and vote on Helldivers 2 balance issues, undocumented nerfs, bugs, and quality-of-life problems submitted by the community.",
     url: `${BASE_URL}/issues`,
-    images: [{ url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630, alt: "HD2 Community Council" }],
+    images: [{ url: `${BASE_URL}/api/og`, width: 1200, height: 630, alt: "HD2 Community Council" }],
   },
   alternates: {
     canonical: `${BASE_URL}/issues`,

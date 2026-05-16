@@ -39,14 +39,14 @@ export const metadata: Metadata = {
     description:
       "The Helldivers 2 community votes on balance issues, undocumented nerfs, and quality-of-life problems. Top issues become formal petitions sent to Arrowhead.",
     url: BASE_URL,
-    images: [{ url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630, alt: "HD2 Community Council" }],
+    images: [{ url: `${BASE_URL}/api/og`, width: 1200, height: 630, alt: "HD2 Community Council" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "HD2 Community Council — Helldivers 2 Balance & Bug Tracker",
     description:
       "Vote on Helldivers 2 balance issues. Top issues become petitions sent to Arrowhead Game Studios.",
-    images: [`${BASE_URL}/opengraph-image`],
+    images: [`${BASE_URL}/api/og`],
   },
   robots: {
     index: true,

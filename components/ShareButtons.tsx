@@ -1,7 +1,5 @@
 "use client";
-import { useState } from "react";
-
-const BASE = "https://democracy.quorate.cc";
+import { useState, type CSSProperties } from "react";
 
 export default function ShareButtons({
   url,
@@ -28,7 +26,7 @@ export default function ShareButtons({
     `Vote here: ${url}`,
     "",
     "*HD2 Community Council — your grievances become petitions to Arrowhead.*",
-  ].filter((l) => l !== undefined).join("\n");
+  ].filter(Boolean).join("\n");
 
   const tweetText = encodeURIComponent(`${title} — ${votes.toLocaleString()} HD2 citizens want this fixed. Vote:`);
   const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(url)}`;
@@ -53,7 +51,7 @@ export default function ShareButtons({
     } catch { /**/ }
   };
 
-  const btnStyle: React.CSSProperties = {
+  const btnStyle: CSSProperties = {
     display: "flex",
     alignItems: "center",
     gap: "6px",
@@ -69,15 +67,8 @@ export default function ShareButtons({
   };
 
   return (
-    <div
-      className="flex items-center gap-2 flex-wrap"
-      style={{ padding: "10px 0" }}
-    >
-      <button
-        className="display"
-        style={btnStyle}
-        onClick={copyLink}
-      >
+    <div className="flex items-center gap-2 flex-wrap" style={{ padding: "10px 0" }}>
+      <button className="display" style={btnStyle} onClick={copyLink}>
         {copied ? "✓ COPIED" : "⬡ COPY LINK"}
       </button>
 
