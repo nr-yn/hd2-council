@@ -10,15 +10,14 @@
     "test": "vitest run",
     "db:seed": "tsx --env-file=.env prisma/seed.ts",
     "e2e": "playwright test --config e2e/playwright.config.ts",
-    "e2e:ui": "playwright test --config e2e/playwright.config.ts --ui",
-    "db:migrate:test": "cross-env DATABASE_URL=\"file:./e2e/test.db\" prisma migrate deploy --schema ../../packages/db/prisma/schema.prisma"
+    "e2e:ui": "playwright test --config e2e/playwright.config.ts --ui"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
-    "@nr-yn/db": "workspace:*",
-    "@nr-yn/documents": "workspace:*",
-    "@nr-yn/governance": "workspace:*",
-    "@nr-yn/rbac": "workspace:*",
+    "@nr-yn/db": "^0.1.0",
+    "@nr-yn/documents": "^0.1.0",
+    "@nr-yn/governance": "^0.1.0",
+    "@nr-yn/rbac": "^0.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
