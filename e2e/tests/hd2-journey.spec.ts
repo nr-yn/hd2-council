@@ -17,7 +17,7 @@
  *   13. [anon]   Petition detail page renders petition body
  *
  * Prerequisites:
- *   DATABASE_URL="file:./e2e/test.db" pnpm --filter @platform/db migrate
+ *   DATABASE_URL="file:./e2e/test.db" pnpm --filter @nryn/db migrate
  *   pnpm --filter hd2-council e2e
  */
 

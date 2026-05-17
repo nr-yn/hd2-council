@@ -1,4 +1,4 @@
-import { prisma } from "@platform/db";
+import { prisma } from "@nryn/db";
 import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 

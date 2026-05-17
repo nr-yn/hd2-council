@@ -2,6 +2,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   serverExternalPackages: ["@react-pdf/renderer"],
-  transpilePackages: ["@platform/documents"],
+  transpilePackages: ["@nryn/documents"],
 };
 export default nextConfig;

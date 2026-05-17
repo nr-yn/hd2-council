@@ -1,8 +1,9 @@
-import { prisma } from "@platform/db";
+import { prisma } from "@nryn/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import { autoAdvanceIfNeeded } from "@/lib/cycle";
+import { buildUnstaleNotes } from "@nryn/governance";
 
 export async function POST(
   _req: NextRequest,
@@ -61,6 +62,9 @@ export async function POST(
     );
   }
 
+  // Restore archived (stale) issue when voted on
+  const { notes: restoredNotes, wasStale: isStale } = buildUnstaleNotes(motion.specialNotes);
+
   // Create vote and increment counter atomically
   const [, updated] = await prisma.$transaction([
     prisma.vote.create({
@@ -73,7 +77,10 @@ export async function POST(
     }),
     prisma.motion.update({
       where: { id: motion.id },
-      data: { votesFor: { increment: 1 } },
+      data: {
+        votesFor: { increment: 1 },
+        ...(isStale ? { specialNotes: restoredNotes } : {}),
+      },
     }),
   ]);
 

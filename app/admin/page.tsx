@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, CYCLE_MIN_VOTING_DAYS } from "@/lib/config";
 import { getOpenCycle, getCycleStateArtifact, parseCycleState, autoAdvanceIfNeeded } from "@/lib/cycle";
-import { prisma } from "@platform/db";
+import { prisma } from "@nryn/db";
 import Link from "next/link";
 import AdminActions from "./AdminActions";
 import DraftEditor from "./DraftEditor";

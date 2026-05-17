@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@platform/db";
+import { prisma } from "@nryn/db";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, COMMUNITY_ORG_ID } from "@/lib/config";
 

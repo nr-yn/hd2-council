@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@platform/db", () => ({
+vi.mock("@nryn/db", () => ({
   prisma: {
     agendaItem: {
       findUnique: vi.fn(),
@@ -15,7 +15,7 @@ vi.mock("@/lib/session", () => ({
   getSession: vi.fn(),
 }));
 
-import { prisma } from "@platform/db";
+import { prisma } from "@nryn/db";
 import { getSession } from "@/lib/session";
 import { POST } from "@/app/api/issues/[id]/amend/route";
 import { NextRequest } from "next/server";
