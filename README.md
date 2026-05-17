@@ -16,10 +16,7 @@
 ## Stack
 
 - **Next.js 16** (App Router)
-- **PostgreSQL** via Prisma (`@nr-yn/db`)
-- **Governance engine** — cycle state machine, stale lifecycle, LLM amendment moderation (`@nr-yn/governance`)
-- **RBAC** (`@nr-yn/rbac`)
-- **PDF generation** (`@nr-yn/documents`)
+- **PostgreSQL** + Prisma
 - Docker + Caddy for deployment
 
 ## Self-hosting
