@@ -2,7 +2,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
   const { COMMUNITY_ORG_ID } = await import("@/lib/config");
-  const { getOpenCycle, markZeroVoteMotionsStale } = await import("@nryn/governance");
+  const { getOpenCycle, markZeroVoteMotionsStale } = await import("@nr-yn/governance");
 
   try {
     const cycle = await getOpenCycle(COMMUNITY_ORG_ID, "council");

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@nryn/db", () => ({
+vi.mock("@nr-yn/db", () => ({
   prisma: {
     agendaItem: { findMany: vi.fn() },
     meeting: { findFirst: vi.fn() },
@@ -11,7 +11,7 @@ vi.mock("@/lib/cycle", () => ({
   getOpenCycle: vi.fn(),
 }));
 
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { getOpenCycle } from "@/lib/cycle";
 import { GET } from "@/app/api/issues/route";
 

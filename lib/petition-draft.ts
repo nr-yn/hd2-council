@@ -1,7 +1,7 @@
-import type { AgendaItem, Motion } from "@nryn/db";
-import { selectIssues, type SelectionConfig } from "@nryn/governance";
+import type { AgendaItem, Motion } from "@nr-yn/db";
+import { selectIssues, type SelectionConfig } from "@nr-yn/governance";
 
-export { selectIssues, type SelectionConfig, type SelectedIssue } from "@nryn/governance";
+export { selectIssues, type SelectionConfig, type SelectedIssue } from "@nr-yn/governance";
 
 export function generatePetitionDraft(
   cycleTitle: string,

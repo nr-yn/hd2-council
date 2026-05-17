@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, COMMUNITY_ORG_ID } from "@/lib/config";
-import { getOpenCycle, markZeroVoteMotionsStale } from "@nryn/governance";
+import { getOpenCycle, markZeroVoteMotionsStale } from "@nr-yn/governance";
 
 // POST /api/admin/cycles/mark-stale
 // Marks all approved issues in the open cycle with votesFor = 0 as stale.

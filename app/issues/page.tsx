@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getOpenCycle } from "@/lib/cycle";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL } from "@/lib/config";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 
 const BASE_URL = "https://democracy.quorate.cc";
 

@@ -1,1 +1,1 @@
-export { evaluateAmendment, type BrainVerdict } from "@nryn/governance";
+export { evaluateAmendment, type BrainVerdict } from "@nr-yn/governance";

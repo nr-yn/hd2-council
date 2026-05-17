@@ -1,4 +1,4 @@
-import type { Meeting, Artifact } from "@nryn/db";
+import type { Meeting, Artifact } from "@nr-yn/db";
 import {
   getOpenCycle as _getOpenCycle,
   getOrCreateOpenCycle as _getOrCreateOpenCycle,
@@ -6,13 +6,13 @@ import {
   parseCycleState,
   transitionCycle,
   autoAdvanceIfNeeded as _autoAdvanceIfNeeded,
-} from "@nryn/governance";
+} from "@nr-yn/governance";
 import { COMMUNITY_ORG_ID, CYCLE_MAX_VOTING_DAYS } from "./config";
 
 // Re-export generic types and pass-through functions
-export type { CycleState } from "@nryn/governance";
+export type { CycleState } from "@nr-yn/governance";
 export { parseCycleState, transitionCycle };
-export { applyStalePolicy, type StalePolicy } from "@nryn/governance";
+export { applyStalePolicy, type StalePolicy } from "@nr-yn/governance";
 
 export function getOpenCycle(): Promise<Meeting | null> {
   return _getOpenCycle(COMMUNITY_ORG_ID, "council");

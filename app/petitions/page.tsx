@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 
 export const metadata: Metadata = {
   title: "Community Petitions",

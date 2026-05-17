@@ -1,9 +1,9 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import { autoAdvanceIfNeeded } from "@/lib/cycle";
-import { buildUnstaleNotes } from "@nryn/governance";
+import { buildUnstaleNotes } from "@nr-yn/governance";
 
 export async function POST(
   _req: NextRequest,

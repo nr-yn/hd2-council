@@ -1,4 +1,4 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { evaluateAmendment } from "@/lib/governance-brain";

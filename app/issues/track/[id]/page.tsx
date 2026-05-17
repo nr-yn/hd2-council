@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },

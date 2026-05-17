@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, MAX_VOTES_PER_EMAIL_PER_CYCLE } from "@/lib/config";
 import UpvoteButton from "./UpvoteButton";

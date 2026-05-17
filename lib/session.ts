@@ -9,7 +9,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 
 export const SESSION_COOKIE = "hd2_session";
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;

@@ -1,4 +1,4 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { createSession, SESSION_COOKIE, sessionCookieOptions } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 

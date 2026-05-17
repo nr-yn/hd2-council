@@ -1,6 +1,6 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { NextRequest } from "next/server";
-import { generatePDFFromMarkdown, type DocumentMeta } from "@nryn/documents";
+import { generatePDFFromMarkdown, type DocumentMeta } from "@nr-yn/documents";
 
 export async function GET(
   _req: NextRequest,

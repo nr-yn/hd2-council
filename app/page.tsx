@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getOpenCycle } from "@/lib/cycle";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 
 export const metadata: Metadata = {
   title: "HD2 Community Council — Helldivers 2 Balance & Bug Tracker",

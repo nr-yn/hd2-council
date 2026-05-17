@@ -1,4 +1,4 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { NextRequest } from "next/server";
 import { getOpenCycle, getOrCreateOpenCycle } from "@/lib/cycle";
 import { COMMUNITY_ORG_ID, MAX_SUBMISSIONS_PER_EMAIL_PER_CYCLE } from "@/lib/config";

@@ -1,10 +1,10 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { ADMIN_EMAIL, COMMUNITY_ORG_ID } from "@/lib/config";
 import { getCycleStateArtifact, parseCycleState, applyStalePolicy } from "@/lib/cycle";
 import { STALE_THRESHOLD_PERCENT, STALE_MIN_KEEP } from "@/lib/config";
-import type { DocumentMeta } from "@nryn/documents";
+import type { DocumentMeta } from "@nr-yn/documents";
 
 const DRAFT_MIME = "application/x-petition-draft";
 

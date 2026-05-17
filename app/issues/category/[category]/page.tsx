@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { getOpenCycle } from "@/lib/cycle";
 
 const BASE_URL = "https://democracy.quorate.cc";

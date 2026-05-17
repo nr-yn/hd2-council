@@ -1,4 +1,4 @@
-import { prisma } from "@nryn/db";
+import { prisma } from "@nr-yn/db";
 import { COMMUNITY_ORG_ID, ADMIN_EMAIL } from "../lib/config";
 
 const CYCLE_ID = "hd2-cycle-1777627062724";
