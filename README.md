@@ -1,6 +1,6 @@
 # HD2 Council
 
-**Community-driven governance for Helldivers 2** — players submit, vote on, and petition balance changes, bug fixes, and quality-of-life improvements directly to Arrowhead.
+**Community-driven governance for Helldivers 2** players submit, vote on, and petition balance changes, bug fixes, and quality-of-life improvements directly to Arrowhead.
 
 🗳️ **Live site: [democracy.quorate.cc](https://democracy.quorate.cc)**
 
