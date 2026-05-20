@@ -17,7 +17,7 @@ import { createRequire } from "module";
 import path from "path";
 import { randomUUID } from "crypto";
 
-// Resolve pg from the pnpm store using a filesystem path (avoids ESM import.meta.url)
+// Use CommonJS require so the `pg` package resolves from node_modules without ESM import.meta.url.
 const req = createRequire(path.resolve(__dirname, "../package.json"));
 const { Client } = req("pg") as typeof import("pg");
 
